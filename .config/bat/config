@@ -1,0 +1,3 @@
+#  Run `bat --list-themes` for examples
+--theme="gruvbox-dark"
+--italic-text=always
