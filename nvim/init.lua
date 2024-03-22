@@ -1,3 +1,3 @@
 require("settings")
-require("plugins")
-require("settings-airline")
+require("lazy-plugins")
+require("mappings")

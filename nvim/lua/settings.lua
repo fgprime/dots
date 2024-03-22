@@ -6,66 +6,66 @@ vim.cmd([[
 ]])
 
 local options = {
-  equalalways = true,
-  clipboard = "unnamed",                --- Copy-paste between vim and everything else
-  expandtab = true,                     --- Use spaces instead of tabs
-  number = true,                        --- Shows current line number
-  hlsearch = true,
-  incsearch = true,                     --- Start searching before pressing enter
-  autoindent = true,                    --- Good auto indent
-  ignorecase = true,                    --- Needed for smartcase
-  smartcase = true,                     --- Uses case in search
-  shiftwidth = 2,                       --- Change a number of space characeters inseted for indentation
-  encoding = "utf-8",                   --- The encoding displayed
-  errorbells = false,                   --- Disables sound effect for errors
-  fileencoding = "utf-8",               --- The encoding written to file
-  smarttab = true,                      --- Makes tabbing smarter will realize you have 2 vs 4
-  tabstop = 2,                          --- Insert 2 spaces for a tab
-  mouse = "a",                          --- Enable mouse
-  relativenumber = true,                --- Enables relative number
-  splitright = true,                    --- Vertical splits will automatically be to the right
-  cursorline = true,                    --- Highlight of current line
-  scrolloff = 15,                       --- Always keep space when scrolling to bottom/top edge
-  backspace = "indent,eol,start",       --- Making sure backspace works
-  undofile = true,                      --- Sets undo to file
-  undodir = os.getenv("HOME") .. "/.config/nvim/.undo//",
-  completeopt = "menu,menuone,noselect", --- Better autocompletion
-  termguicolors = true,                 --- Correct terminal colors
-  cc = "80",                            --- Show ruler at 80 characters
-  title = true,
-  hidden = true,
-  switchbuf = "useopen,uselast",
-  spell = true,
-  spelllang = "en_gb,en_us",
-  splitbelow = true,
-  inccommand = "split",
-  background = "dark",
-  list = true,
-  ttimeoutlen = 0,
-  cmdheight = 3,                  --- Give more space for displaying messages
-  emoji = false,                  --- Fix emoji display
-  foldlevelstart = 99,            --- Expand all folds by default
-  foldtext = "CustomFold()",      --- Emit custom function for foldtext
-  lazyredraw = true,              --- Makes macros faster & prevent errors in complicated mappings
-  showtabline = 2,                --- Always show tabs
-  signcolumn = "yes",             --- Add extra sign column next to line number
-  smartindent = true,             --- Makes indenting smart
-  softtabstop = 2,                --- Insert 2 spaces for a tab
-  swapfile = false,               --- Swap not needed
-  timeoutlen = 300,               --- Faster completion
-  updatetime = 100,               --- Faster completion
-  viminfo = "'1000",              --- Increase the size of file history
-  wildignore = "*node_modules/**", --- Don't search inside Node.js modules (works for gutentag)
-  wrap = false,                   --- Display long lines as just one line
-  writebackup = false,            --- Not needed
-  -- Neovim defaults
-  backup = false,                 --- Recommended by coc
-  conceallevel = 0,               --- Show `` in markdown files
-  showmode = true,                --- Don't show things like -- INSERT -- anymore
-  filetype = "on",
+	equalalways = true,
+	clipboard = "unnamed", --- Copy-paste between vim and everything else
+	expandtab = true, --- Use spaces instead of tabs
+	number = true, --- Shows current line number
+	hlsearch = true,
+	incsearch = true, --- Start searching before pressing enter
+	autoindent = true, --- Good auto indent
+	ignorecase = true, --- Needed for smartcase
+	smartcase = true, --- Uses case in search
+	shiftwidth = 2, --- Change a number of space characeters inseted for indentation
+	encoding = "utf-8", --- The encoding displayed
+	errorbells = false, --- Disables sound effect for errors
+	fileencoding = "utf-8", --- The encoding written to file
+	smarttab = true, --- Makes tabbing smarter will realize you have 2 vs 4
+	tabstop = 2, --- Insert 2 spaces for a tab
+	mouse = "a", --- Enable mouse
+	relativenumber = true, --- Enables relative number
+	splitright = true, --- Vertical splits will automatically be to the right
+	cursorline = true, --- Highlight of current line
+	scrolloff = 15, --- Always keep space when scrolling to bottom/top edge
+	backspace = "indent,eol,start", --- Making sure backspace works
+	undofile = true, --- Sets undo to file
+	undodir = os.getenv("HOME") .. "/.config/nvim/.undo//",
+	completeopt = "menu,menuone,noselect", --- Better autocompletion
+	termguicolors = true, --- Correct terminal colors
+	cc = "80", --- Show ruler at 80 characters
+	title = true,
+	hidden = true,
+	switchbuf = "useopen,uselast",
+	spell = true,
+	spelllang = "en_gb,en_us",
+	splitbelow = true,
+	inccommand = "split",
+	background = "dark",
+	list = true,
+	ttimeoutlen = 0,
+	cmdheight = 3, --- Give more space for displaying messages
+	emoji = false, --- Fix emoji display
+	foldlevelstart = 99, --- Expand all folds by default
+	foldtext = "CustomFold()", --- Emit custom function for foldtext
+	-- lazyredraw = true, --- Makes macros faster & prevent errors in complicated mappings
+	showtabline = 2, --- Always show tabs
+	signcolumn = "yes", --- Add extra sign column next to line number
+	smartindent = true, --- Makes indenting smart
+	softtabstop = 2, --- Insert 2 spaces for a tab
+	swapfile = false, --- Swap not needed
+	timeoutlen = 300, --- Faster completion
+	updatetime = 100, --- Faster completion
+	viminfo = "'1000", --- Increase the size of file history
+	wildignore = "*node_modules/**", --- Don't search inside Node.js modules (works for gutentag)
+	wrap = false, --- Display long lines as just one line
+	writebackup = false, --- Not needed
+	-- Neovim defaults
+	backup = false, --- Recommended by coc
+	conceallevel = 1, --- Show `` in markdown files
+	showmode = true, --- Don't show things like -- INSERT -- anymore
+	filetype = "on",
 }
 
-vim.api.nvim_exec("language en_US", true)
+vim.api.nvim_exec("language en_US.UTF-8", true)
 
 -- Disalbe netrw in favour of NvimTree
 -- vim.g.loaded_netrw = 1
@@ -76,9 +76,9 @@ vim.opt.ssop:remove("options")
 vim.opt.ssop:remove("folds")
 
 local globals = {
-  fillchars = "fold:\\ ", --- Fill chars needed for folds
-  mapleader = " ",       --- Map leader key to SPC
-  --- speeddating_no_mappings     = 1,          --- Disable default mappings for speeddating
+	fillchars = "fold:\\ ", --- Fill chars needed for folds
+	mapleader = " ", --- Map leader key to SPC
+	--- speeddating_no_mappings     = 1,          --- Disable default mappings for speeddating
 }
 
 -- Font
@@ -100,11 +100,11 @@ vim.opt.shortmess:append("I") -- don't show the default intro message
 vim.opt.whichwrap:append("<,>,[,],h,l")
 
 for k, v in pairs(options) do
-  vim.opt[k] = v
+	vim.opt[k] = v
 end
 
 for k, v in pairs(globals) do
-  vim.g[k] = v
+	vim.g[k] = v
 end
 
 --  Abbrevations for inserting time and date
@@ -134,12 +134,12 @@ vim.cmd([[ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe
 --   au BufRead,BufNewFile *.js map gf :execute "drop ".expand('%:p:h').'/'.expand('<cfile>').'.js'<cr>
 
 vim.api.nvim_create_autocmd({ "InsertEnter" }, {
-  callback = function()
-    vim.api.nvim_set_hl(0, "Normal", { bg = "#141517" })
-  end,
+	callback = function()
+		vim.api.nvim_set_hl(0, "Normal", { bg = "#141517" })
+	end,
 })
 vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-  callback = function()
-    vim.api.nvim_set_hl(0, "Normal", { bg = "#1d2021" })
-  end,
+	callback = function()
+		vim.api.nvim_set_hl(0, "Normal", { bg = "#1d2021" })
+	end,
 })

@@ -21,6 +21,9 @@ map("n", "J", function()
     ]])
 end, opts)
 
+-- Fast ESC with jj
+map("i", "jj", "<Esc>", opts)
+
 -- Make Y behave like other capitals
 map("n", "Y", "y$", opts)
 
@@ -229,10 +232,10 @@ wk.register({
 	["4"] = { "4<C-W>w", "Move to Window 4" },
 	["5"] = { "5<C-W>w", "Move to Window 5" },
 	["6"] = { "6<C-W>w", "Move to Window 6" },
-	a = { "ggVG<c-$>", "Select all" },
+	["*"] = { "ggVG<c-$>", "Select all" },
 	p = { '"xp', "Paste deleted after" },
 	P = { '"xP', "Paste deleted before" },
-	w = { "<C-W>w", "Window next" },
+	q = { "<cmd>:qa<CR>", "[q]uit" },
 	h = { "<cmd>:noh<CR>", "No highlight" },
 	-- ["!"] = { "<cmd>:qa<CR>", "Quit neovim" },
 	["<Space>"] = {
@@ -254,25 +257,25 @@ wk.register({
 		end,
 		"Lines",
 	},
-	["_"] = {
-		function()
-			require("telescope.builtin").buffers()
-		end,
-		"Buffers",
-	},
+	-- ["_"] = {
+	-- 	function()
+	-- 		require("telescope.builtin").buffers()
+	-- 	end,
+	-- 	"Buffers",
+	-- },
 	["."] = {
 		function()
 			require("telescope.builtin").live_grep()
 		end,
 		"Grep",
 	},
-	["+"] = { "<cmd>NvimTreeToggle<CR>", "[ Tree ]" },
-	["!"] = {
-		function()
-			require("persistence").load()
-		end,
-		"Session: Load last one",
-	},
+	["+"] = { "<cmd>NvimTreeToggle<CR>", "Show Tree" },
+	-- ["!"] = {
+	-- 	function()
+	-- 		require("persistence").load()
+	-- 	end,
+	-- 	"Session: Load last one",
+	-- },
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
 
@@ -283,7 +286,7 @@ wk.register({
 		name = "[ New ]",
 		f = { ":enew<CR>", "New file" },
 		b = { ":lcd %:p:h <CR>:e <CR>", "New file within same directory as current buffer" },
-		s = { ":lcd %:p:h <CR>:vsp <CR>", " split within same directory as current buffer" },
+		s = { ":lcd %:p:h <CR>:vsp <CR>", "New split within same directory as current buffer" },
 		c = {
 			function()
 				require("scripts.saveas").input()
@@ -335,7 +338,7 @@ wk.register({
 --------------------------------------------------------------------
 -- General
 wk.register({
-	["*"] = {
+	["_"] = {
 		name = "[ General ]",
 		c = { "<cmd>ColorizerToggle<CR>", "[ Colorizer ]" },
 		n = {
@@ -393,41 +396,48 @@ map("n", "<C-M-s>", function()
 end, opts)
 
 wk.register({
-	o = {
-		name = "[ Open Application ]",
+	j = {
+		name = "[ Jump to Application ]",
 		c = {
 			function()
 				open("Google Chrome")
 			end,
-			"Open Google Chrome",
+			"Google Chrome",
 		},
 		s = {
 			function()
 				open("Safari")
 			end,
-			"Open Apple Safari",
+			"Apple Safari",
 		},
 
 		o = {
 			function()
 				open("Obsidian")
 			end,
-			"Open Obsidian",
+			"Obsidian",
+		},
+
+		f = {
+			function()
+				open("Figma")
+			end,
+			"Figma",
 		},
 	},
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
--- LSP
-wk.register({
-	l = {
-		name = "[ LSP ]",
-		f = {
-			name = "Format",
-		},
-	},
-}, { prefix = "<leader>" })
+-- -- LSP
+-- wk.register({
+-- 	l = {
+-- 		name = "[ LSP ]",
+-- 		f = {
+-- 			name = "Format",
+-- 		},
+-- 	},
+-- }, { prefix = "<leader>" })
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
@@ -442,7 +452,7 @@ wk.register({
 			end,
 			"Add file",
 		},
-		q = {
+		h = {
 			function()
 				require("harpoon.ui").toggle_quick_menu()
 			end,
@@ -476,11 +486,6 @@ wk.register({
 wk.register({
 	c = {
 		name = "[ Code ]",
-		-- s = {
-		-- 	name = "Surround does not work", -- TODO
-		-- 	["'"] = { "ysiw", "Surround word" },
-		-- 	[";"] = { "yss", "Surround line" },
-		-- },
 	},
 }, { prefix = "<leader>" })
 
@@ -640,9 +645,15 @@ wk.register({
 			end,
 			"File browser",
 		},
-		["."] = {
+		["-"] = {
 			function()
 				require("telescope.builtin").find_files({ cwd = "~/.dotfiles" })
+			end,
+			"Dotfiles",
+		},
+		["_"] = {
+			function()
+				require("telescope.builtin").find_files({ cwd = "~/.scripts" })
 			end,
 			"Dotfiles",
 		},
@@ -704,6 +715,27 @@ wk.register({
 			end,
 			"Grep",
 		},
+		w = {
+			function()
+				local word = vim.fn.expand("<cword>")
+				require("telescope.builtin").find_files({ default_text = word })
+			end,
+			"Grep word",
+		},
+		W = {
+			function()
+				-- local word = vim.fn.expand("<cWORD>")
+				local word = vim.fn.expand("<cword>")
+				require("telescope.builtin").grep_string({ default_text = word })
+			end,
+			"Grep WORD",
+		},
+		["."] = {
+			function()
+				require("telescope.builtin").live_grep()
+			end,
+			"Grep",
+		},
 		h = {
 			function()
 				require("telescope.builtin").help_tags()
@@ -750,6 +782,15 @@ wk.register({
 			end,
 			"Quickfix",
 		},
+	},
+}, { prefix = "<leader>" })
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+-- Obsidian
+wk.register({
+	o = {
+		name = "[ Obsidian ]",
 	},
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
@@ -860,6 +901,19 @@ wk.register({
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
+-- Buffer
+wk.register({
+	p = {
+		name = "[ Path ]",
+		["-"] = { "<cmd>cd ~/.dotfiles<CR>", ".dotfiles" },
+		["_"] = { "<cmd>cd ~/.scripts<CR>", ".scripts" },
+		["p"] = { "<cmd>cd ~/Documents/Projects<CR>", "Projects" },
+		["d"] = { "<cmd>cd ~/Documents<CR>", "Documents" },
+	},
+}, { prefix = "<leader>" })
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
 -- Time Date
 wk.register({
 	["#"] = {
@@ -873,36 +927,37 @@ wk.register({
 
 --------------------------------------------------------------------
 -- Terminal
-wk.register({
-	t = {
-		name = "[ Terminal ]",
-		t = {
-			function()
-				vim.cmd([[:10 ToggleTerm direction=float <CR> ]])
-				vim.cmd([[startinsert!]])
-			end,
-			"Float",
-		},
-		a = {
-			"<cmd>ToggleTermToggleAll<CR>",
-			"Toggle all",
-		},
-		["1"] = {
-			"<cmd>:1 ToggleTerm direction=horizontal <CR>",
-			"Horizontal 1",
-		},
-		["2"] = {
-			"<cmd>:2 ToggleTerm direction=horizontal <CR>",
-			"Horizontal 2",
-		},
-		["3"] = {
-			"<cmd>:3 ToggleTerm direction=horizontal <CR>",
-			"Horizontal 2",
-		},
-		["4"] = {
-			"<cmd>:4 ToggleTerm direction=horizontal <CR>",
-			"Horizontal 4",
-		},
-	},
-}, { prefix = "<leader>" })
+-- Replaced bei TMUX
+-- wk.register({
+--   t = {
+--     name = "[ Terminal ]",
+--     t = {
+--       function()
+--         vim.cmd([[:10 ToggleTerm direction=float <CR> ]])
+--         vim.cmd([[startinsert!]])
+--       end,
+--       "Float",
+--     },
+--     a = {
+--       "<cmd>ToggleTermToggleAll<CR>",
+--       "Toggle all",
+--     },
+--     ["1"] = {
+--       "<cmd>:1 ToggleTerm direction=horizontal <CR>",
+--       "Horizontal 1",
+--     },
+--     ["2"] = {
+--       "<cmd>:2 ToggleTerm direction=horizontal <CR>",
+--       "Horizontal 2",
+--     },
+--     ["3"] = {
+--       "<cmd>:3 ToggleTerm direction=horizontal <CR>",
+--       "Horizontal 2",
+--     },
+--     ["4"] = {
+--       "<cmd>:4 ToggleTerm direction=horizontal <CR>",
+--       "Horizontal 4",
+--     },
+--   },
+-- }, { prefix = "<leader>" })
 --------------------------------------------------------------------
