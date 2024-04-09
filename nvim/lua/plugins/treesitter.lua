@@ -96,12 +96,12 @@ return {
 
 						keymaps = {
 							-- You can use the capture groups defined in textobjects.scm
-							["aa"] = "@parameter.outer",
-							["ia"] = "@parameter.inner",
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
+							-- ["aa"] = "@parameter.outer",
+							-- ["ia"] = "@parameter.inner",
+							-- ["af"] = "@function.outer",
+							-- ["if"] = "@function.inner",
+							-- ["ac"] = "@class.outer",
+							-- ["ic"] = "@class.inner",
 						},
 					},
 					move = {
@@ -172,7 +172,8 @@ return {
 			{
 				-- ✓ A super powerful autopair plugin for Neovim that supports multiple characters.
 				"windwp/nvim-autopairs",
-				commit = "59df87a", -- 🔐
+				commit = "dbfc1c3", -- 🔐
+				dependencies = { "hrsh7th/nvim-cmp" },
 				config = function()
 					local npairs = require("nvim-autopairs")
 					npairs.setup({

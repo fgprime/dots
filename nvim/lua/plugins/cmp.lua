@@ -1,3 +1,17 @@
+-- Based on https://github.com/akinsho/toggleterm.nvim/blob/193786e0371e3286d3bc9aa0079da1cd41beaa62/lua/toggleterm/utils.lua#L24
+function gitDir()
+	local gitdir = vim.fn.system(string.format("git -C %s rev-parse --show-toplevel", vim.fn.expand("%:p:h")))
+	local isgitdir = vim.fn.matchstr(gitdir, "^fatal:.*") == ""
+	if not isgitdir then
+		return "~/Documents/Projects/"
+	end
+	return vim.trim(gitdir)
+end
+
+function isGitDir()
+	return os.execute("git rev-parse --is-inside-work-tree >> /dev/null 2>&1")
+end
+
 return {
 	-- {{{ CMP Autocomplete
 	-- ✓ A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
@@ -127,6 +141,11 @@ return {
 						behavior = cmp.ConfirmBehavior.Replace,
 						select = true,
 					}),
+					-- TODO: use CR or C-y?
+					["<C-y>"] = cmp.mapping.confirm({
+						behavior = cmp.ConfirmBehavior.Replace,
+						select = true,
+					}),
 					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
@@ -157,11 +176,12 @@ return {
 					{ name = "treesitter", priority = 1 },
 					{ name = "nvim_lsp_signature_help", priority = 10 },
 					-- TODO: Implement conditional rg / not running it on home directory
-					-- {
-					--   name = "rg",
-					--   keyword_length = 3,
-					--   priority = 5,
-					-- },
+					{
+						name = "rg",
+						cwd = gitDir(),
+						-- keyword_length = 3,
+						-- priority = 5,
+					},
 				},
 			})
 
@@ -252,9 +272,7 @@ return {
 		"L3MON4D3/LuaSnip",
 		-- follow latest release.
 		version = "v2.*", -- 🔐
-		-- install jsregexp (optional!).
-		-- TODO: CHECK
-		-- build = "make install_jsregexp",
+		build = "make install_jsregexp",
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 		},

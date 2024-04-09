@@ -111,6 +111,7 @@ end
 vim.cmd("iabbrev itime <C-R>=strftime('%H:%M')<cr>")
 vim.cmd("iabbrev igdate <C-R>=strftime('%d.%m.%Y')<cr>")
 vim.cmd("iabbrev idate <C-R>=strftime('%Y-%m-%d')<cr>")
+vim.api.nvim_create_user_command("TimeDiff", ":. !~/.scripts/timediff.sh", {})
 
 -- Fix spelling issues
 vim.cmd("iabbrev cosnt const")

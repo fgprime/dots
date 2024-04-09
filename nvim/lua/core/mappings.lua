@@ -21,9 +21,6 @@ map("n", "J", function()
     ]])
 end, opts)
 
--- Fast ESC with jj
-map("i", "jj", "<Esc>", opts)
-
 -- Make Y behave like other capitals
 map("n", "Y", "y$", opts)
 
@@ -53,12 +50,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = highlight_group,
 	pattern = "*",
 })
-
--- ----------------------------------------------------------------------------
--- Select variables/identifiers with or without comma
--- ----------------------------------------------------------------------------
-map("n", "vai", "viwl,", opts)
-map("n", "vii", "viw,", opts)
 
 -- ----------------------------------------------------------------------------
 -- More molecular undo of text
@@ -109,6 +100,7 @@ map("n", "gP", '"xP', opts)
 map("v", "y", "ygv<Esc>", opts)
 --
 -- Move between windows
+-- Replaced with TmuxNavigation
 -- map("n", "<C-j>", "<C-W>j", opts)
 -- map("n", "<C-k>", "<C-W>k", opts)
 -- map("n", "<C-h>", "<C-W>h", opts)
@@ -117,7 +109,7 @@ map("n", "<C-h>", ":TmuxNavigateLeft<CR>", opts)
 map("n", "<C-j>", ":TmuxNavigateDown<CR>", opts)
 map("n", "<C-k>", ":TmuxNavigateUp<CR>", opts)
 map("n", "<C-l>", ":TmuxNavigateRight<CR>", opts)
-map("n", "<C-\\>", ":TmuxNavigatePrevious<CR>", opts)
+map("n", "<C-;>", ":TmuxNavigatePrevious<CR>", opts)
 
 --
 -- Move windows
@@ -145,15 +137,18 @@ map("n", "g*", "g*zz", opts)
 -- map({ "i", "n", "v" }, "<Right>", "<Nop>", opts)
 -- map({ "i", "n", "v" }, "<Up>", "<Nop>", opts)
 
--- CTRL-# save
-map({ "n", "i", "v" }, "<C-s>", function()
+-- CTRL-s save
+
+function saveFile()
 	local value = vim.api.nvim_exec("update", true)
 	if value ~= nil and value ~= "" then
 		require("notify")(value, "info", { title = "File saved", timeout = 500 })
 	else
 		require("notify")("No changes", "warn", { title = "File not saved", timeout = 1000 })
 	end
-end, opts)
+end
+
+map({ "n", "i", "v" }, "<C-s>", saveFile, opts)
 --
 -- ----------------------------------------------------------------------------
 -- Additional bindings
@@ -265,11 +260,11 @@ wk.register({
 	-- },
 	["."] = {
 		function()
-			require("telescope.builtin").live_grep()
+			saveFile()
 		end,
-		"Grep",
+		"Save file",
 	},
-	["+"] = { "<cmd>NvimTreeToggle<CR>", "Show Tree" },
+	["e"] = { "<cmd>NvimTreeToggle<CR>", "Explorer" },
 	-- ["!"] = {
 	-- 	function()
 	-- 		require("persistence").load()
@@ -423,6 +418,20 @@ wk.register({
 				open("Figma")
 			end,
 			"Figma",
+		},
+
+		t = {
+			function()
+				open("TailwindCSS")
+			end,
+			"Tailwind",
+		},
+
+		g = {
+			function()
+				open("ChatGPT")
+			end,
+			"ChatGPT",
 		},
 	},
 }, { prefix = "<leader>" })
@@ -825,11 +834,9 @@ local browser = function(application, parameter)
 	vim.fn.jobstart(open_command, { detach = true })
 end
 
--- Get visual selection
 local function get_visual()
-	local _, ls, cs = unpack(vim.fn.getpos("v"))
-	local _, le, ce = unpack(vim.fn.getpos("."))
-	return table.concat(vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {}), "\n")
+	vim.api.nvim_exec([[ normal "vygv ]], true)
+	return vim.api.nvim_exec([[echo getreg('v')]], true):gsub("[\n\r]", "^J")
 end
 
 -- Normal mode
@@ -893,8 +900,8 @@ wk.register({
 		l = "Order by language",
 		w = "Order by window number",
 		s = { "<cmd>w<CR>", "Save buffer" },
-		d = { "<Cmd>bd<CR>", "Close buffer" },
-		c = { "<Cmd>BufferClose<CR>", "Close file" },
+		d = { "<Cmd>close<CR>", "Close file" },
+		c = { "<Cmd>bd<CR>", "Close buffer view" },
 		x = { "<cmd>bd!<CR>", "DELETE buffer" },
 	},
 }, { prefix = "<leader>" })
@@ -903,8 +910,8 @@ wk.register({
 --------------------------------------------------------------------
 -- Buffer
 wk.register({
-	p = {
-		name = "[ Path ]",
+	l = {
+		name = "[ Location ]",
 		["-"] = { "<cmd>cd ~/.dotfiles<CR>", ".dotfiles" },
 		["_"] = { "<cmd>cd ~/.scripts<CR>", ".scripts" },
 		["p"] = { "<cmd>cd ~/Documents/Projects<CR>", "Projects" },
@@ -921,6 +928,7 @@ wk.register({
 		t = { "<cmd>Time<CR>", "Time" },
 		d = { "<cmd>Date<CR>", "Date" },
 		u = { "<cmd>USDate<CR>", "US Date" },
+		c = { "<cmd>TimeDiff<CR>", "Time Diff" },
 	},
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
