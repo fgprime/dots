@@ -225,6 +225,7 @@ return {
 					nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 					nmap("gd", vim.lsp.buf.definition, "[G]oto [d]efinition")
 					nmap("K", vim.lsp.buf.hover, "Hover Documentation")
+					nmap("<leader>cK", vim.lsp.buf.hover, "Hover Documentation")
 					nmap("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 					nmap("<leader>ck", vim.lsp.buf.signature_help, "Signature Documentation")
 					nmap("<leader>cw", vim.lsp.buf.add_workspace_folder, "[w]orkspace Add Folder")

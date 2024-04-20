@@ -105,7 +105,7 @@ return {
 			require("telescope").load_extension("repo")
 			require("telescope").load_extension("neoclip")
 			require("telescope").load_extension("file_browser")
-			require("telescope").load_extension("harpoon")
+			-- require("telescope").load_extension("harpoon")
 		end,
 	},
 
@@ -119,7 +119,7 @@ return {
 	-- ✓ An extension for telescope.nvim that searches the filesystem for git repositories.
 	{
 		"cljoly/telescope-repo.nvim",
-		commit = "d069994", -- 🔐
+		commit = "b4c0b70", -- 🔐
 	},
 
 	{
@@ -128,11 +128,12 @@ return {
 		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
 	},
 
-	{
-		"ThePrimeagen/harpoon",
-		commit = "c1aebba", -- 🔐
-		dependencies = "nvim-lua/plenary.nvim",
-	},
+	-- FIXME: harpoon is crashing after update
+	-- {
+	-- 	"ThePrimeagen/harpoon",
+	-- 	commit = "ccae1b9", -- 🔐
+	-- 	dependencies = "nvim-lua/plenary.nvim",
+	-- },
 
 	-- }}} Telescope
 }
