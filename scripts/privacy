@@ -1,0 +1,13 @@
+#!/bin/bash
+# https://eclecticlight.co/2020/01/28/a-guide-to-catalinas-privacy-protection-4-tccutil/
+declare -a apps=("com.microsoft.teams" "com.microsoft.teams.helper" "us.zoom.xos")
+
+if [ "$1" = "--help" ]; then
+    lsappinfo
+    echo "Use lsappinfo to get app identifier and add it to list"
+else
+    for app in "${apps[@]}"
+    do
+        tccutil reset All $app
+    done
+fi

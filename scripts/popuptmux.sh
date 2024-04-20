@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 width=${2:-80%}
 height=${2:-80%}
 if [ "$(tmux display-message -p -F "#{session_name}")" = "popup" ]; then

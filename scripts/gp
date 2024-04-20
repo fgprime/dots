@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Script to initialize tmuxinator with worktree project
+echo "TMUX worktree"
+
+# Is it a git directory
+[ -z "$(git -C "$(pwd)" rev-parse --git-dir 2>/dev/null)" ] && echo "The directory is not a Git repository." && exit 1
+
+# Start tmux session if not startet
+[[ "$TERM" =~ ^screen.* ]] || {
+	exec tmux
+	exit 1
+}
+
+# Select worktree and start tmuxinator project
+[[ -z "$*" ]] && {
+	git worktree list --porcelain | grep worktree | sed 1d | awk -F.git/ '{print $2}' | fzf-tmux -p | xargs tmuxinator start PRJ
+	exit 0
+}
+
+# Choose PWD as entry point
+[[ "$1" == "." ]] && {
+	tmuxinator start PRJ "$(pwd)"
+	exit 0
+}
+
+# Choose different entry point
+tmuxinator start PRJ "$1"
