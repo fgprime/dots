@@ -2,7 +2,7 @@ return {
 	-- ✓ Leap is a general-purpose motion plugin for Neovim, with the ultimate goal of establishing a new standard interface for moving around in the visible area in Vim-like modal editors.
 	{
 		"ggandor/leap.nvim",
-		commit = "68ca052", -- 🔐
+		commit = "6252b89", -- 🔐
 		config = function()
 			vim.keymap.set("n", "s", function()
 				local focusable_windows_on_tabpage = vim.tbl_filter(function(win)

@@ -1,4 +1,5 @@
 require("core.settings")
-require("laccy")
+require("plugin")
 require("auto.autocmds")
 require("core.mappings")
+require("core.filetypes")

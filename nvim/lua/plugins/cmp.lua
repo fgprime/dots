@@ -18,7 +18,7 @@ return {
 	{
 		"hrsh7th/nvim-cmp",
 
-		commit = "b8c2a62", -- 🔐
+		commit = "abacd4c", -- 🔐
 		dependencies = {
 
 			{
@@ -27,7 +27,7 @@ return {
 			},
 			{
 				"hrsh7th/cmp-nvim-lsp",
-				commit = "5af77f5", -- 🔐
+				commit = "fa13fd6", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-buffer",
@@ -39,23 +39,23 @@ return {
 			},
 			{
 				"hrsh7th/cmp-calc",
-				commit = "50792f3", -- 🔐
+				commit = "5947b41", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-cmdline",
-				commit = "8ee981b", -- 🔐
+				commit = "d250c63", -- 🔐
 			},
 			{
 				"ray-x/cmp-treesitter",
-				commit = "389eadd", -- 🔐
+				commit = "958fcfa", -- 🔐
 			}, -- nvim-cmp source for treesitter nodes. Using all treesitter highlight nodes as completion candicates. LRU cache is used to improve performance.
 			{
 				"lukas-reineke/cmp-rg",
-				commit = "1cad8eb", -- 🔐
+				commit = "dde00ad", -- 🔐
 			},
 			{
 				"saadparwaiz1/cmp_luasnip",
-				commit = "1809552", -- 🔐
+				commit = "05a9ab2", -- 🔐
 			},
 		},
 		config = function()
@@ -68,31 +68,31 @@ return {
 
 			local lspkind = require("lspkind")
 			local kind_icons = {
-				Text = "",
-				Method = "",
-				Function = "",
+				Text = "󰉿",
+				Method = "󰆧",
+				Function = "󰊕",
 				Constructor = "",
-				Field = "",
-				Variable = "",
-				Class = "ﴯ",
+				Field = "󰜢",
+				Variable = "󰀫",
+				Class = "󰠱",
 				Interface = "",
 				Module = "",
-				Property = "ﰠ",
-				Unit = "",
-				Value = "",
+				Property = "󰜢",
+				Unit = "󰑭",
+				Value = "󰎠",
 				Enum = "",
-				Keyword = "",
+				Keyword = "󰌋",
 				Snippet = "",
-				Color = "",
-				File = "",
-				Reference = "",
-				Folder = "",
+				Color = "󰏘",
+				File = "󰈙",
+				Reference = "󰈇",
+				Folder = "󰉋",
 				EnumMember = "",
-				Constant = "",
-				Struct = "",
+				Constant = "󰏿",
+				Struct = "󰙅",
 				Event = "",
-				Operator = "",
-				TypeParameter = "",
+				Operator = "󰆕",
+				TypeParameter = "",
 			}
 
 			local luasnip = require("luasnip")
@@ -118,8 +118,11 @@ return {
 				formatting = {
 					fields = { "kind", "abbr", "menu" },
 					format = function(entry, vim_item)
-						local kind =
-							require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+						local kind = require("lspkind").cmp_format({
+							mode = "symbol_text",
+							maxwidth = 50,
+							symbol_map = kind_icons,
+						})(entry, vim_item)
 						local strings = vim.split(kind.kind, "%s", { trimempty = true })
 						kind.kind = " " .. (strings[1] or "") .. " "
 						kind.menu = "    " .. (strings[2] or "") .. ""
@@ -134,7 +137,7 @@ return {
 				},
 				mapping = cmp.mapping.preset.insert({
 					["<C-e>"] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
-					["<C-d>"] = cmp.mapping.scroll_docs(-4),
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-Space>"] = cmp.mapping.complete(),
 					["<CR>"] = cmp.mapping.confirm({
@@ -146,7 +149,7 @@ return {
 						behavior = cmp.ConfirmBehavior.Replace,
 						select = true,
 					}),
-					["<Tab>"] = cmp.mapping(function(fallback)
+					["<C-j>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
 						elseif luasnip.expand_or_jumpable() then
@@ -157,7 +160,7 @@ return {
 							fallback()
 						end
 					end, { "i", "s" }),
-					["<S-Tab>"] = cmp.mapping(function(fallback)
+					["<C-k>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_prev_item()
 						elseif luasnip.jumpable(-1) then
@@ -175,7 +178,6 @@ return {
 					{ name = "calc", priority = 5 },
 					{ name = "treesitter", priority = 1 },
 					{ name = "nvim_lsp_signature_help", priority = 10 },
-					-- TODO: Implement conditional rg / not running it on home directory
 					{
 						name = "rg",
 						cwd = gitDir(),
@@ -264,7 +266,7 @@ return {
 	-- ✓ This tiny plugin adds vscode-like pictograms to neovim built-in lsp
 	{
 		"onsails/lspkind-nvim",
-		commit = "c68b3a0", -- 🔐
+		commit = "1735dd5", -- 🔐
 	},
 
 	-- ✓ Luasnip is a snippet-engine written entirely in lua.

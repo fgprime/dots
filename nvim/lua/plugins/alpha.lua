@@ -79,11 +79,15 @@ return {
 			recentFile.opts.hl_shortcut = "SpecialComment"
 			recentFile.opts.width = 26
 
-			local findFile = dashboard.button("󱁐 󱁐  ", "  Find  ")
+			local recentSession = dashboard.button("󱁐 w r", "  Session")
+			recentSession.opts.hl_shortcut = "SpecialComment"
+			recentSession.opts.width = 26
+
+			local findFile = dashboard.button("󱁐 󱁐  ", "  Find  ")
 			findFile.opts.hl_shortcut = "SpecialComment"
 			findFile.opts.width = 26
 
-			local quit = dashboard.button("󱁐 q  ", "  Quit  ")
+			local quit = dashboard.button("󱁐 Q  ", "  Quit  ")
 			quit.opts.hl_shortcut = "SpecialComment"
 			quit.opts.width = 26
 
@@ -100,6 +104,7 @@ return {
 				{ type = "text", val = "Quick links", opts = { hl = "SpecialComment", position = "center" } },
 				newFile,
 				recentFile,
+				recentSession,
 				findFile,
 				quit,
 			}
@@ -111,14 +116,14 @@ return {
 				local total_plugins = #vim.tbl_keys(require("lazy").plugins())
 				local datetime = os.date(" %d-%m-%Y   %H:%M:%S")
 				local version = vim.version()
-				local nvim_version_info = "  v" .. version.major .. "." .. version.minor .. "." .. version.patch
+				local nvim_version_info = " 󰥔 v" .. version.major .. "." .. version.minor .. "." .. version.patch
 
 				return {
 					"",
 					datetime,
-					" " .. total_plugins .. " plugins on" .. nvim_version_info,
+					" " .. total_plugins .. " plugins on" .. nvim_version_info,
 					"",
-					"        ﯦ Focus!",
+					"         Focus!",
 				}
 			end
 

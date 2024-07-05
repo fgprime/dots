@@ -101,10 +101,6 @@ map("v", "y", "ygv<Esc>", opts)
 --
 -- Move between windows
 -- Replaced with TmuxNavigation
--- map("n", "<C-j>", "<C-W>j", opts)
--- map("n", "<C-k>", "<C-W>k", opts)
--- map("n", "<C-h>", "<C-W>h", opts)
--- map("n", "<C-l>", "<C-W>l", opts)
 map("n", "<C-h>", ":TmuxNavigateLeft<CR>", opts)
 map("n", "<C-j>", ":TmuxNavigateDown<CR>", opts)
 map("n", "<C-k>", ":TmuxNavigateUp<CR>", opts)
@@ -130,6 +126,9 @@ map("n", "N", "Nzz", opts)
 map("n", "*", "*zz", opts)
 map("n", "#", "#zz", opts)
 map("n", "g*", "g*zz", opts)
+--
+-- Use gt to open definition in new tab
+map("n", "gt", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", opts)
 --
 -- Stops using arrow keys in vim
 -- map({ "i", "n", "v" }, "<Down>", "<Nop>", opts)
@@ -230,7 +229,7 @@ wk.register({
 	["*"] = { "ggVG<c-$>", "Select all" },
 	p = { '"xp', "Paste deleted after" },
 	P = { '"xP', "Paste deleted before" },
-	q = { "<cmd>:qa<CR>", "[q]uit" },
+	Q = { "<cmd>:qa<CR>", "[q]uit" },
 	h = { "<cmd>:noh<CR>", "No highlight" },
 	-- ["!"] = { "<cmd>:qa<CR>", "Quit neovim" },
 	["<Space>"] = {
@@ -291,19 +290,20 @@ wk.register({
 	},
 }, { prefix = "<leader>" })
 
--- " Tabs
--- let g:which_key_map.t = {
---     \ 'name' : '+Tabs',
---     \ 'h' : [':tabfirst',                         'tabfirst'],
---     \ 'k' : [':tabnext',                          'tabnext'],
---     \ 'j' : [':tabprev',                          'tabprev'],
---     \ 'l' : [':tablast',                          'tablast'],
---     \ 'n' : [':tab',                           'tabnew'],
---     \ 'c' : [':tabclose',                         'tabclose'] ,
---     \ 'H' : [':tabm 0',                           'tabm 0'] ,
---     \ 'L' : [':tabm',                             'tabm'] ,
---     \ }
---
+--------------------------------------------------------------------
+-- Tabs
+wk.register({
+	t = {
+		name = "[ Tabs ]",
+		k = { ":tabfirst<CR>", "tabfirst" },
+		l = { ":tabnext<CR>", "tabnext" },
+		h = { ":tabprev<CR>", "tabprev" },
+		j = { ":tablast<CR>", "tablast" },
+		n = { ":tabnew<CR>", "tabnew" },
+		c = { ":tabclose<CR>", "tabclose" },
+	},
+}, { prefix = "<leader>" })
+
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
@@ -312,13 +312,19 @@ wk.register({
 	w = {
 		name = "[ Window ]",
 		w = { "<C-W>w", "Window next" },
-		r = { "<C-W>r", "Window rotate" },
+		r = {
+			function()
+				require("persistence").load()
+			end,
+			"Window restore",
+		},
 		c = { "<C-W>c", "Window close" },
 		q = { "<C-W>q", "Window quit" },
 		j = { "<C-W>j", "Window up" },
 		k = { "<C-W>k", "Window down" },
 		h = { "<C-W>h", "Window left" },
 		l = { "<C-W>l", "Window right" },
+		z = { "<cmd>MaximizerToggle<CR>", "Window maximize or minimize" },
 		["-"] = { "<C-W>10<", "Decrease width" },
 		["+"] = { "<C-W>10>", "Increase width" },
 		["."] = { ":resize -10<CR>", "Decrease height" },
@@ -326,6 +332,21 @@ wk.register({
 		["="] = { "<C-W>=", "Window equal" },
 		["_"] = { "<C-W>s", "Window split horizontal" },
 		s = { "<C-W>v", "Window split vertical" },
+	},
+}, { prefix = "<leader>" })
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+-- Quickfix
+wk.register({
+	q = {
+		name = "[ Quickfix ]",
+		o = { ":copen<CR>", "[o]pen" },
+		c = { ":cclose<CR>", "[c]lose" },
+		gg = { ":cfirst<CR>", "first" },
+		n = { ":cnext<CR>", "next" },
+		p = { ":cprev<CR>", "previous" },
+		G = { ":clast<CR>", "last" },
 	},
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
@@ -501,6 +522,12 @@ wk.register({
 wk.register({
 	d = {
 		name = "[ Diagnostics ]",
+		x = { "<cmd>TroubleToggle<CR>", "Open/close trouble list" },
+		w = { "<cmd>TroubleToggle workspace_diagnostics<CR>", "Open trouble workspace diagnostics" },
+		d = { "<cmd>TroubleToggle document_diagnostics<CR>", "Open trouble document diagnostics" },
+		q = { "<cmd>TroubleToggle quickfix<CR>", "Open trouble quickfix list" },
+		l = { "<cmd>TroubleToggle loclist<CR>", "Open trouble location list" },
+		t = { "<cmd>TodoTrouble<CR>", "Open todos in trouble" },
 	},
 }, { prefix = "<leader>" })
 --------------------------------------------------------------------
@@ -545,7 +572,7 @@ wk.register({
 			end,
 			"Diff to last commit",
 		},
-		["?"] = { "<cmd>:Gstatus<CR>", "Status" },
+		["?"] = { "<cmd>:Git<CR>", "Status" },
 		h = {
 			name = "Hunk",
 		},
@@ -601,8 +628,8 @@ wk.register({
 		p = { "<cmd>:Git push<CR>", "Push" },
 		P = { "<cmd>:Git pull<CR>", "pull" },
 		r = { "<cmd>:GRemove<CR>", "Remove" },
-		v = { "<cmd>:GV<CR>", "View commits" },
-		V = { "<cmd>:GV!<CR>", "View buffer commits" },
+		-- v = { "<cmd>:GV<CR>", "View commits" },
+		-- V = { "<cmd>:GV!<CR>", "View buffer commits" },
 	},
 }, { prefix = "<leader>" })
 
@@ -931,41 +958,4 @@ wk.register({
 		c = { "<cmd>TimeDiff<CR>", "Time Diff" },
 	},
 }, { prefix = "<leader>" })
---------------------------------------------------------------------
-
---------------------------------------------------------------------
--- Terminal
--- Replaced bei TMUX
--- wk.register({
---   t = {
---     name = "[ Terminal ]",
---     t = {
---       function()
---         vim.cmd([[:10 ToggleTerm direction=float <CR> ]])
---         vim.cmd([[startinsert!]])
---       end,
---       "Float",
---     },
---     a = {
---       "<cmd>ToggleTermToggleAll<CR>",
---       "Toggle all",
---     },
---     ["1"] = {
---       "<cmd>:1 ToggleTerm direction=horizontal <CR>",
---       "Horizontal 1",
---     },
---     ["2"] = {
---       "<cmd>:2 ToggleTerm direction=horizontal <CR>",
---       "Horizontal 2",
---     },
---     ["3"] = {
---       "<cmd>:3 ToggleTerm direction=horizontal <CR>",
---       "Horizontal 2",
---     },
---     ["4"] = {
---       "<cmd>:4 ToggleTerm direction=horizontal <CR>",
---       "Horizontal 4",
---     },
---   },
--- }, { prefix = "<leader>" })
 --------------------------------------------------------------------

@@ -49,16 +49,22 @@ return {
 		},
 		lazy = true,
 		cmd = { "Mason", "MasonUpdate", "MasonInstall", "MasonUninstallAll", "MasonLog" },
-		commit = "c43eeb5", -- 🔐
+		commit = "0950b15", -- 🔐
 		config = function() end,
 	},
 
 	-- ✓ mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
 	{
 		"williamboman/mason-lspconfig.nvim",
-		commit = "fe4cce4", -- 🔐
+		commit = "37a336b", -- 🔐
+		lazy = true,
 		config = function()
 			require("mason").setup({
+				providers = {
+					-- Deactivated to avoid constant requests
+					-- "mason.providers.registry-api",
+					-- "mason.providers.client",
+				},
 				ui = {
 					check_outdated_packages_on_open = false,
 				},
@@ -80,6 +86,7 @@ return {
 					"pyright",
 					"sqlls",
 					"yamlls",
+					"gopls",
 				},
 				automatic_installation = true,
 				ui = { check_outdated_servers_on_open = false },
@@ -167,10 +174,11 @@ return {
 						if client.server_capabilities.documentSymbolProvider then
 							require("nvim-navic").attach(client, bufnr)
 						end
-						on_attach(client, bufnr)
+						-- remove attach to error message that global on_attach does not exist anymore/is nil
+						-- on_attach(client, bufnr)
 					end,
 
-					settings = lspsettings,
+					settings = settings,
 					commands = commands,
 				})
 			end
@@ -185,14 +193,25 @@ return {
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 		},
-		commit = "946c58c", -- 🔐
+		commit = "6168237", -- 🔐
 		config = function()
 			-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 			local opts = { noremap = true, silent = true }
-			vim.keymap.set("n", "<space>de", vim.diagnostic.open_float, opts)
+
+			vim.keymap.set(
+				"n",
+				"<space>dQ",
+				vim.diagnostic.open_float,
+				{ noremap = true, silent = true, desc = "LSP: Diagnostics" }
+			)
 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 			vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-			vim.keymap.set("n", "<space>dq", vim.diagnostic.setloclist, opts)
+			vim.keymap.set(
+				"n",
+				"<space>dL",
+				vim.diagnostic.setloclist,
+				{ noremap = true, silent = true, desc = "LSP: Diagnostics Location" }
+			)
 
 			-- Use LspAttach autocommand to only map the following keys
 			-- after the language server attaches to the current buffer
@@ -259,7 +278,7 @@ return {
 	-- ✓ Standalone UI for nvim-lsp progress. Eye candy for the impatient.
 	{
 		"j-hui/fidget.nvim",
-		commit = "ad8873c", -- 🔐
+		commit = "ef99df0", -- 🔐
 		config = function()
 			require("fidget").setup()
 		end,
@@ -268,8 +287,7 @@ return {
 	-- ✓ Show function signature when you type
 	{
 		"ray-x/lsp_signature.nvim",
-		commit = "51784ba", -- 🔐
-		-- commit = "17ff7a4", -- 🔐
+		commit = "2ec2ba2", -- 🔐
 		config = function()
 			require("lsp_signature").setup({
 				bind = true,
@@ -289,7 +307,7 @@ return {
 	{
 
 		"nvimtools/none-ls.nvim",
-		commit = "d991c89", -- 🔐
+		commit = "c2dd472", -- 🔐
 		config = function()
 			local null_ls = require("null-ls")
 			local sources = {
@@ -313,11 +331,14 @@ return {
 				-- null_ls.builtins.code_actions.shellcheck,
 				null_ls.builtins.formatting.stylua,
 				null_ls.builtins.formatting.shfmt,
+				null_ls.builtins.formatting.golines,
 			}
 			if pcall(require, "gitsigns") then
 				table.insert(sources, require("null-ls").builtins.code_actions.gitsigns)
 			end
+
 			-- print(vim.inspect(sources))
+
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 			require("null-ls").setup({
 				sources = sources,
@@ -346,7 +367,7 @@ return {
 	-- ✓ mason-null-ls bridges mason.nvim with the null-ls plugin - making it easier to use both plugins together.
 	{
 		"jay-babu/mason-null-ls.nvim",
-		commit = "ae0c5fa", -- 🔐
+		commit = "de19726", -- 🔐
 		config = function()
 			require("mason-null-ls").setup({
 				-- A list of sources to install if they're not already installed.
