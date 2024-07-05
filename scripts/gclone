@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Script to clone repos from git
+
+# Is it not a git directory
+[ -n "$(git -C "$(pwd)" rev-parse --git-dir 2>/dev/null)" ] && echo "The directory is a Git repository." && exit 1
+
+# Start tmux session if not startet
+[[ "$TERM" =~ ^screen.* ]] || {
+	exec tmux
+	exit 1
+}
+
+# get list of 100 repositories
+repository=$(gh repo list --limit 100 --source | cut -f 1 | fzf-tmux -p)
+
+# clone directory
+git clone "git@github.com:$repository" --bare
+
+# get directory name for cloned repo
+directory=$(echo "$repository" | cut -d "/" -f 2)
+
+# cd into directory via tmux
+tmux send-keys "cd ./${directory}.git" Enter

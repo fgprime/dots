@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Script to create new worktree
+echo "Git worktree script"
+if [ -n "$(git -C "$(pwd)" rev-parse --git-dir 2>/dev/null)" ]; then
+	if [ "$(git -C "$(pwd)" rev-parse --git-dir)" = "." ]; then
+		if [[ -z "$*" ]]; then
+			echo "No branch name was given."
+		else
+			read -p "Create branch with name $1? (y/n) " -n 1 -r
+			echo
+			if [[ $REPLY =~ ^[Yy]$ ]]; then
+				git fetch
+				git branch -f "$1"
+				git worktree add "$1"
+				cd "$1" || exit
+				git push origin "$1"
+
+				# FIX for locked main
+				git push --set-upstream origin "$1"
+				# git branch --set-upstream-to=origin/"$1" "$1"
+				git pull origin main
+
+				git merge origin/main
+			fi
+		fi
+	else
+		echo "The directory is not the root of git."
+	fi
+else
+	echo "The directory is not a Git repository."
+fi

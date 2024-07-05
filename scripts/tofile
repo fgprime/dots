@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Script to cd into git project directories
+
+# Start tmux session if not startet
+[[ "$TERM" =~ ^screen.* ]] || {
+	exec tmux
+	exit 1
+}
+
+# Get list of files
+files=$(fd -t f --hidden --follow --exclude "00_Archive" --exclude "temp" --exclude "Training" . ~/Documents/Projects/ | fzf-tmux -p 80% --preview 'bat --style=numbers --color=always --line-range :500 {}')
+
+[ "$files" == "" ] && exit 0
+
+nvim $files

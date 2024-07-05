@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Script to cd into git project directories
+
+# Start tmux session if not startet
+[[ "$TERM" =~ ^screen.* ]] || {
+	exec tmux
+	exit 1
+}
+
+# Get list of git projects
+dir=$(fd -t d --hidden --follow --exclude "00_Archive" --exclude "temp" --exclude "Training" . ~/Documents/Projects/ --exec test -d "{}/.git" -o -f "{}/HEAD" \; -x echo "{}" | cat <(echo -e "~/.scripts/\n~/.dotfiles/\n~/Documents/Dokumentation/Knowledge") - | fzf-tmux -p 30%)
+
+[ "$dir" == "" ] && exit 0
+
+# Change directory
+tmux send-keys "cd $dir" Enter

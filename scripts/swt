@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Script to checkout remote branch
+echo "Git checkout worktree branch"
+
+# Is it a git directory
+[ -z "$(git -C "$(pwd)" rev-parse --git-dir 2>/dev/null)" ] && {
+	echo "The directory is not a Git repository."
+	exit 1
+}
+# Is bare repository
+[ "$(git rev-parse --is-bare-repository)" != "true" ] && {
+	echo "The directory is not a bare repository"
+	exit 1
+}
+
+git fetch
+
+branch=$(git ls-remote --heads origin | gsed -nE 's/^[a-z0-9]*\srefs\/heads\///p' | fzf-tmux -p)
+
+[ -z "$branch" ] && {
+	echo "No branch selected."
+	exit 0
+}
+
+# Does branch already exists locally
+[ -n "$(git rev-parse --verify "$branch" 2>/dev/null)" ] && {
+	read -p "Branch with name $branch already exists. Should it be overwritten? (y/n) " -n 1 -r
+	echo
+	[[ $REPLY =~ ^[Nn]$ ]] && {
+		exit 0
+	}
+}
+
+git branch "$branch" -f
+git worktree add "$branch"
+cd "$branch"
+git pull origin "$branch"

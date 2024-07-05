@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Check if npm lock file exists
+if [ -f "package-lock.json" ]; then
+	package-manager npm
+	exit 0
+fi
+
+# Check if yarn lock file exists
+if [ -f "yarn.lock" ]; then
+	package-manager yarn
+	exit 0
+fi
+
+# Check if yarn lock file exists
+if [ -f "Makefile" ]; then
+	package-manager make
+	exit 0
+fi
+
+# If neither lock file is found, print a message
+echo "Neither npm nor Yarn lock file found. Package manager unknown."
+exit 1
