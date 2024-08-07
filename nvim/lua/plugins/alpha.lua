@@ -73,23 +73,23 @@ return {
 
 			local newFile = dashboard.button("󱁐 n f", "  New   ", "Boolean")
 			newFile.opts.hl_shortcut = "SpecialComment"
-			newFile.opts.width = 26
+			newFile.opts.width = 25
 
 			local recentFile = dashboard.button("󱁐 f r", "  Recent")
 			recentFile.opts.hl_shortcut = "SpecialComment"
-			recentFile.opts.width = 26
+			recentFile.opts.width = 25
 
 			local recentSession = dashboard.button("󱁐 w r", "  Session")
 			recentSession.opts.hl_shortcut = "SpecialComment"
-			recentSession.opts.width = 26
+			recentSession.opts.width = 25
 
 			local findFile = dashboard.button("󱁐 󱁐  ", "  Find  ")
 			findFile.opts.hl_shortcut = "SpecialComment"
-			findFile.opts.width = 26
+			findFile.opts.width = 25
 
 			local quit = dashboard.button("󱁐 Q  ", "  Quit  ")
 			quit.opts.hl_shortcut = "SpecialComment"
-			quit.opts.width = 26
+			quit.opts.width = 25
 
 			-- dashboard.button("<Leader>ps", "  Update plugins"),
 
@@ -114,7 +114,7 @@ return {
 
 			local function footer()
 				local total_plugins = #vim.tbl_keys(require("lazy").plugins())
-				local datetime = os.date(" %d-%m-%Y   %H:%M:%S")
+				local datetime = os.date(" %d-%m-%Y    %H:%M:%S")
 				local version = vim.version()
 				local nvim_version_info = " 󰥔 v" .. version.major .. "." .. version.minor .. "." .. version.patch
 

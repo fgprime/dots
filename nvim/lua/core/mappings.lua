@@ -107,6 +107,13 @@ map("n", "<C-k>", ":TmuxNavigateUp<CR>", opts)
 map("n", "<C-l>", ":TmuxNavigateRight<CR>", opts)
 map("n", "<C-;>", ":TmuxNavigatePrevious<CR>", opts)
 
+-- Use Jumplist
+-- map('n', xk '<C-S-o>', wrap(fn.jumplist_jump_buf, -1), 'Jumplist: Go to last buffer')
+-- map('n', xk '<C-S-i>', wrap(fn.jumplist_jump_buf, 1), 'Jumplist: Go to next buffer')
+-- New Line without auto comment
+-- map('n', 'go', 'o<C-u>', 'Insert on new line without autocomment')
+-- map('n', 'gO', 'O<C-u>', 'Insert on new line above without autocomment')
+
 --
 -- Move windows
 map("n", "<C-M-S-j>", "<C-W>J", opts)
@@ -219,20 +226,30 @@ local wk = require("which-key")
 
 --------------------------------------------------------------------
 -- Basic
-wk.register({
-	["1"] = { "1<C-W>w", "Move to Window 1" },
-	["2"] = { "2<C-W>w", "Move to Window 2" },
-	["3"] = { "3<C-W>w", "Move to Window 3" },
-	["4"] = { "4<C-W>w", "Move to Window 4" },
-	["5"] = { "5<C-W>w", "Move to Window 5" },
-	["6"] = { "6<C-W>w", "Move to Window 6" },
-	["*"] = { "ggVG<c-$>", "Select all" },
-	p = { '"xp', "Paste deleted after" },
-	P = { '"xP', "Paste deleted before" },
-	Q = { "<cmd>:qa<CR>", "[q]uit" },
-	h = { "<cmd>:noh<CR>", "No highlight" },
-	-- ["!"] = { "<cmd>:qa<CR>", "Quit neovim" },
-	["<Space>"] = {
+wk.add({
+	-- { "<leader>1", "1<C-W>w", desc = "Move to Window 1" },
+	-- { "<leader>2", "2<C-W>w", desc = "Move to Window 2" },
+	-- { "<leader>3", "3<C-W>w", desc = "Move to Window 3" },
+	-- { "<leader>4", "4<C-W>w", desc = "Move to Window 4" },
+	-- { "<leader>5", "5<C-W>w", desc = "Move to Window 5" },
+	-- { "<leader>6", "6<C-W>w", desc = "Move to Window 6" },
+	--
+	{
+		"<leader>-",
+		function()
+			require("oil").toggle_float()
+		end,
+		desc = "Oil",
+		icon = "",
+	},
+	{ "<leader>*", "ggVG<c-$>", desc = "Select all", icon = "󰓎" },
+	{ "<leader>p", '"xp', desc = "Paste deleted after", icon = "" },
+	{ "<leader>P", '"xP', desc = "Paste deleted before", icon = "" },
+	-- { "<leader>Q", "<cmd>:qa<CR>", desc = "[q]uit" },
+	-- { "<leader>!", "<cmd>:qa<CR>", desc = "Quit neovim" },
+	{ "<leader>h", "<cmd>:noh<CR>", desc = "No highlight", icon = "" },
+	{
+		"<leader><Space>",
 		function()
 			if vim.fn.system("git rev-parse --is-inside-work-tree") == true then
 				require("telescope.builtin").git_files()
@@ -240,163 +257,150 @@ wk.register({
 				require("telescope.builtin").find_files()
 			end
 		end,
-		"Find [git]",
+		desc = "Find [git]",
 	},
-	[","] = {
-		function()
-			require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-				winblend = 10,
-				previewer = false,
-			}))
-		end,
-		"Lines",
-	},
-	-- ["_"] = {
+	-- {
+	-- 	"<leader>,",
 	-- 	function()
-	-- 		require("telescope.builtin").buffers()
+	-- 		require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+	-- 			winblend = 10,
+	-- 			previewer = false,
+	-- 		}))
 	-- 	end,
-	-- 	"Buffers",
+	-- 	desc = "Lines",
 	-- },
-	["."] = {
+	{
+		"<leader>.",
 		function()
 			saveFile()
 		end,
-		"Save file",
+		desc = "Save file",
+		icon = "",
 	},
-	["e"] = { "<cmd>NvimTreeToggle<CR>", "Explorer" },
-	-- ["!"] = {
-	-- 	function()
-	-- 		require("persistence").load()
-	-- 	end,
-	-- 	"Session: Load last one",
-	-- },
-}, { prefix = "<leader>" })
+	{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Explorer", icon = "" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- New
-wk.register({
-	n = {
-		name = "[ New ]",
-		f = { ":enew<CR>", "New file" },
-		b = { ":lcd %:p:h <CR>:e <CR>", "New file within same directory as current buffer" },
-		s = { ":lcd %:p:h <CR>:vsp <CR>", "New split within same directory as current buffer" },
-		c = {
-			function()
-				require("scripts.saveas").input()
-			end,
-			"New file through copy",
-		},
+wk.add({
+	{ "<leader>n", group = "New", icon = "󰎔" },
+	{ "<leader>nf", ":enew<CR>", desc = "New file" },
+	{ "<leader>nb", ":lcd %:p:h <CR>:e <CR>", desc = "New file within same directory as current buffer" },
+	{ "<leader>ns", ":lcd %:p:h <CR>:vsp <CR>", desc = "New split within same directory as current buffer" },
+	{
+		"<leader>nc",
+		function()
+			require("scripts.saveas").input()
+		end,
+		desc = "New file through copy",
 	},
-}, { prefix = "<leader>" })
+})
 
 --------------------------------------------------------------------
 -- Tabs
-wk.register({
-	t = {
-		name = "[ Tabs ]",
-		k = { ":tabfirst<CR>", "tabfirst" },
-		l = { ":tabnext<CR>", "tabnext" },
-		h = { ":tabprev<CR>", "tabprev" },
-		j = { ":tablast<CR>", "tablast" },
-		n = { ":tabnew<CR>", "tabnew" },
-		c = { ":tabclose<CR>", "tabclose" },
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>t", group = "Tabs" },
+	{ "<leader>tk", ":tabfirst<CR>", desc = "tabfirst" },
+	{ "<leader>tl", ":tabnext<CR>", desc = "tabnext" },
+	{ "<leader>th", ":tabprev<CR>", desc = "tabprev" },
+	{ "<leader>tj", ":tablast<CR>", desc = "tablast" },
+	{ "<leader>tn", ":tabnew<CR>", desc = "tabnew" },
+	{ "<leader>tc", ":tabclose<CR>", desc = "tabclose" },
+})
 
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Window
-wk.register({
-	w = {
-		name = "[ Window ]",
-		w = { "<C-W>w", "Window next" },
-		r = {
-			function()
-				require("persistence").load()
-			end,
-			"Window restore",
-		},
-		c = { "<C-W>c", "Window close" },
-		q = { "<C-W>q", "Window quit" },
-		j = { "<C-W>j", "Window up" },
-		k = { "<C-W>k", "Window down" },
-		h = { "<C-W>h", "Window left" },
-		l = { "<C-W>l", "Window right" },
-		z = { "<cmd>MaximizerToggle<CR>", "Window maximize or minimize" },
-		["-"] = { "<C-W>10<", "Decrease width" },
-		["+"] = { "<C-W>10>", "Increase width" },
-		["."] = { ":resize -10<CR>", "Decrease height" },
-		[":"] = { ":resize +10<CR>", "Increase height" },
-		["="] = { "<C-W>=", "Window equal" },
-		["_"] = { "<C-W>s", "Window split horizontal" },
-		s = { "<C-W>v", "Window split vertical" },
+wk.add({
+	{ "<leader>w", group = "Window" },
+	{ "<leader>ww", "<C-W>w", desc = "Window next" },
+	{
+		"<leader>wr",
+		function()
+			require("persistence").load()
+		end,
+		desc = "Window restore",
 	},
-}, { prefix = "<leader>" })
+	{ "<leader>wc", "<C-W>c", desc = "Window close" },
+	{ "<leader>wq", "<C-W>q", desc = "Window quit" },
+	{ "<leader>wj", "<C-W>j", desc = "Window up" },
+	{ "<leader>wk", "<C-W>k", desc = "Window down" },
+	{ "<leader>wh", "<C-W>h", desc = "Window left" },
+	{ "<leader>wl", "<C-W>l", desc = "Window right" },
+	{ "<leader>wz", "<cmd>MaximizerToggle<CR>", desc = "Window maximize or minimize" },
+	{ "<leader>w-", "<C-W>10<", desc = "Decrease width" },
+	{ "<leader>w+", "<C-W>10>", desc = "Increase width" },
+	{ "<leader>w.", ":resize -10<CR>", desc = "Decrease height" },
+	{ "<leader>w:", ":resize +10<CR>", desc = "Increase height" },
+	{ "<leader>w=", "<C-W>=", desc = "Window equal" },
+	{ "<leader>w_", "<C-W>s", desc = "Window split horizontal" },
+	{ "<leader>ws", "<C-W>v", desc = "Window split vertical" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Quickfix
-wk.register({
-	q = {
-		name = "[ Quickfix ]",
-		o = { ":copen<CR>", "[o]pen" },
-		c = { ":cclose<CR>", "[c]lose" },
-		gg = { ":cfirst<CR>", "first" },
-		n = { ":cnext<CR>", "next" },
-		p = { ":cprev<CR>", "previous" },
-		G = { ":clast<CR>", "last" },
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>q", group = "Quickfix" },
+	{ "<leader>qo", ":copen<CR>", desc = "[o]pen" },
+	{ "<leader>qc", ":cclose<CR>", desc = "[c]lose" },
+	{ "<leader>qgg", ":cfirst<CR>", desc = "first" },
+	{ "<leader>qn", ":cnext<CR>", desc = "next" },
+	{ "<leader>qp", ":cprev<CR>", desc = "previous" },
+	{ "<leader>qG", ":clast<CR>", desc = "last" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- General
-wk.register({
-	["_"] = {
-		name = "[ General ]",
-		c = { "<cmd>ColorizerToggle<CR>", "[ Colorizer ]" },
-		n = {
-			function()
-				vim.cmd([[
-      source $MYVIMRC
-    ]])
-				vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
-			end,
-			"[ NVIM ]: Relead configuration",
-		},
-		s = { "<cmd>SymbolsOutline<CR>", "[ Symbols ]" },
-		m = { "<cmd>MinimapToggle<CR>", "[ Minimap ]" },
-		u = { "<cmd>UndotreeToggle<CR>", "[ Undotree ]" },
-		p = { "<cmd>TroubleToggle<CR>", "[ Trouble ]" },
-		f = {
-			function()
-				vim.lsp.buf.format()
-			end,
-			"Format",
-		},
-		l = {
-			function()
-				require("persistence").load()
-			end,
-			"Session: Load for the current directory",
-		},
-		d = {
-			function()
-				require("persistence").load({ last = true })
-			end,
-			"Session: Load last one",
-		},
-		t = { "<cmd>NvimTreeToggle<CR>", "[ Tree ]" },
-		x = {
-			function()
-				require("persistence").stop()
-			end,
-			"Session: Stop recording",
-		},
+wk.add({
+	{ "<leader>_", group = "General", icon = "󰋜" },
+	{ "<leader>_c", "<cmd>ColorizerToggle<CR>", desc = "Colorizer" },
+	{
+		"<leader>_n",
+		function()
+			vim.cmd([[ source $MYVIMRC ]])
+			vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
+		end,
+		desc = "Configuration reload",
 	},
-}, { prefix = "<leader>" })
+
+	{ "<leader>_s", "<cmd>SymbolsOutline<CR>", desc = "Symbols" },
+	{ "<leader>_m", "<cmd>MinimapToggle<CR>", desc = "Minimap" },
+	{ "<leader>_u", "<cmd>UndotreeToggle<CR>", desc = "Undotree" },
+	{ "<leader>_p", "<cmd>TroubleToggle<CR>", desc = "Trouble" },
+	{
+		"<leader>_f",
+		function()
+			vim.lsp.buf.format()
+		end,
+		desc = "Format",
+	},
+	{
+		"<leader>_l",
+		function()
+			require("persistence").load()
+		end,
+		desc = "Session: Load for the current directory",
+	},
+	{
+		"<leader>_d",
+		function()
+			require("persistence").load({ last = true })
+		end,
+		desc = "Session: Load last one",
+	},
+	{ "<leader>_t", "<cmd>NvimTreeToggle<CR>", desc = "Tree" },
+	{
+		"<leader>_x",
+		function()
+			require("persistence").stop()
+		end,
+		desc = "Session: Stop recording",
+	},
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
@@ -411,444 +415,475 @@ map("n", "<C-M-s>", function()
 	open("Safari")
 end, opts)
 
-wk.register({
-	j = {
-		name = "[ Jump to Application ]",
-		c = {
-			function()
-				open("Google Chrome")
-			end,
-			"Google Chrome",
-		},
-		s = {
-			function()
-				open("Safari")
-			end,
-			"Apple Safari",
-		},
-
-		o = {
-			function()
-				open("Obsidian")
-			end,
-			"Obsidian",
-		},
-
-		f = {
-			function()
-				open("Figma")
-			end,
-			"Figma",
-		},
-
-		t = {
-			function()
-				open("TailwindCSS")
-			end,
-			"Tailwind",
-		},
-
-		g = {
-			function()
-				open("ChatGPT")
-			end,
-			"ChatGPT",
-		},
+wk.add({
+	{ "<leader>j", group = "Jump to", icon = "" },
+	{
+		"<leader>jc",
+		function()
+			open("Google Chrome")
+		end,
+		desc = "Google Chrome",
 	},
-}, { prefix = "<leader>" })
+	{
+		"<leader>js",
+		function()
+			open("Safari")
+		end,
+		desc = "Apple Safari",
+	},
+
+	{
+		"<leader>jo",
+		function()
+			open("Obsidian")
+		end,
+		desc = "Obsidian",
+	},
+
+	{
+		"<leader>jf",
+		function()
+			open("Figma")
+		end,
+		desc = "Figma",
+	},
+
+	{
+		"<leader>jt",
+		function()
+			open("TailwindCSS")
+		end,
+		desc = "Tailwind",
+	},
+
+	{
+		"<leader>jg",
+		function()
+			open("ChatGPT")
+		end,
+		desc = "ChatGPT",
+	},
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- -- LSP
--- wk.register({
--- 	l = {
--- 		name = "[ LSP ]",
--- 		f = {
--- 			name = "Format",
--- 		},
--- 	},
--- }, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>l", group = "[ LSP ]" },
+	{
+		"<leader>lf",
+		desc = "Format",
+	},
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Harpoon
-wk.register({
-	h = {
-		name = "[ Harpoon ]",
-
-		a = {
-			function()
-				require("harpoon.mark").add_file()
-			end,
-			"Add file",
-		},
-		h = {
-			function()
-				require("harpoon.ui").toggle_quick_menu()
-			end,
-			"Quick menu",
-		},
-		n = {
-			function()
-				require("harpoon.ui").nav_next()
-			end,
-			"Next file",
-		},
-
-		p = {
-			function()
-				require("harpoon.ui").nav_prev()
-			end,
-			"Previous file",
-		},
-		-- s = {
-		-- 	name = "Surround does not work", -- TODO
-		-- 	["'"] = { "ysiw", "Surround word" },
-		-- 	[";"] = { "yss", "Surround line" },
-		-- },
-	},
-}, { prefix = "<leader>" })
+-- wk.register({
+-- 	h = {
+-- 		name = "Harpoon",
+--
+-- 		a = {
+-- 			function()
+-- 				require("harpoon.mark").add_file()
+-- 			end,
+-- 			"Add file",
+-- 		},
+-- 		h = {
+-- 			function()
+-- 				require("harpoon.ui").toggle_quick_menu()
+-- 			end,
+-- 			"Quick menu",
+-- 		},
+-- 		n = {
+-- 			function()
+-- 				require("harpoon.ui").nav_next()
+-- 			end,
+-- 			"Next file",
+-- 		},
+--
+-- 		p = {
+-- 			function()
+-- 				require("harpoon.ui").nav_prev()
+-- 			end,
+-- 			"Previous file",
+-- 		},
+-- 		-- s = {
+-- 		-- 	name = "Surround does not work", -- TODO
+-- 		-- 	["'"] = { "ysiw", "Surround word" },
+-- 		-- 	[";"] = { "yss", "Surround line" },
+-- 		-- },
+-- 	},
+-- }, { prefix = "<leader>" })
 
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Code
-wk.register({
-	c = {
-		name = "[ Code ]",
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>c", group = "Code" },
+})
 
-wk.register({
-	d = {
-		name = "[ Diagnostics ]",
-		x = { "<cmd>TroubleToggle<CR>", "Open/close trouble list" },
-		w = { "<cmd>TroubleToggle workspace_diagnostics<CR>", "Open trouble workspace diagnostics" },
-		d = { "<cmd>TroubleToggle document_diagnostics<CR>", "Open trouble document diagnostics" },
-		q = { "<cmd>TroubleToggle quickfix<CR>", "Open trouble quickfix list" },
-		l = { "<cmd>TroubleToggle loclist<CR>", "Open trouble location list" },
-		t = { "<cmd>TodoTrouble<CR>", "Open todos in trouble" },
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>d", group = "Diagnostics", icon = "" },
+	{ "<leader>dx", "<cmd>TroubleToggle<CR>", desc = "Open/close trouble list" },
+	{ "<leader>dw", "<cmd>TroubleToggle workspace_diagnostics<CR>", desc = "Open trouble workspace diagnostics" },
+	{ "<leader>dd", "<cmd>TroubleToggle document_diagnostics<CR>", desc = "Open trouble document diagnostics" },
+	{ "<leader>dq", "<cmd>TroubleToggle quickfix<CR>", desc = "Open trouble quickfix list" },
+	{ "<leader>dl", "<cmd>TroubleToggle loclist<CR>", desc = "Open trouble location list" },
+	{ "<leader>dt", "<cmd>TodoTrouble<CR>", desc = "Open todos in trouble" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- GIT
-wk.register({
-	g = {
-		name = "[ Git ]",
-		["/"] = { "<cmd>:!git rev-parse --show-toplevel<CR>", "No highlight" },
-		S = { "<cmd>:Git add .", "Stage all" },
-		s = {
-			function()
-				package.loaded.gitsigns.stage_buffer()
-			end,
-			"Stage buffer",
-		},
-		b = {
-			function()
-				package.loaded.gitsigns.blame_line({ full = true })
-			end,
-			"Blame",
-		},
-		B = {
-			function()
-				package.loaded.gitsigns.toggle_current_line_blame()
-			end,
-			"Blame line",
-		},
-		["#"] = { "<cmd>:Git blame<CR>", "Blame list" },
-		x = { "<cmd>:GBrowse<CR>", "Github" },
-		c = { "<cmd>:Git commit<CR>", "Commit" },
-		d = {
-			function()
-				package.loaded.gitsigns.diffthis()
-			end,
-			"Diff buffer",
-		},
-		D = {
-			function()
-				package.loaded.gitsigns.diffthis("~")
-			end,
-			"Diff to last commit",
-		},
-		["?"] = { "<cmd>:Git<CR>", "Status" },
-		h = {
-			name = "Hunk",
-		},
-		hh = {
-			function()
-				package.loaded.gitsigns.stage_hunk()
-			end,
-			"Hunk stage",
-		},
-		hu = {
-			function()
-				package.loaded.gitsigns.undo_stage_hunk()
-			end,
-			"Hunk undo stage",
-		},
-		hr = {
-			function()
-				package.loaded.gitsigns.reset_hunk()
-			end,
-			"Hunk reset",
-		},
-		R = {
-			function()
-				package.loaded.gitsigns.reset_buffer()
-			end,
-			"Hunk undo stage",
-		},
-		hp = {
-			function()
-				package.loaded.gitsigns.preview_hunk()
-			end,
-			"Hunk preview",
-		},
-		["-"] = {
-			function()
-				package.loaded.gitsigns.toggle_deleted()
-			end,
-			"Toggle deleted",
-		},
-		hj = {
-			function()
-				package.loaded.gitsigns.next_hunk()
-			end,
-			"Hunk next",
-		},
-		hk = {
-			function()
-				package.loaded.gitsigns.prev_hunk()
-			end,
-			"Hunk previous",
-		},
-		l = { "<cmd>:Git log<CR>", "Log" },
-		p = { "<cmd>:Git push<CR>", "Push" },
-		P = { "<cmd>:Git pull<CR>", "pull" },
-		r = { "<cmd>:GRemove<CR>", "Remove" },
-		-- v = { "<cmd>:GV<CR>", "View commits" },
-		-- V = { "<cmd>:GV!<CR>", "View buffer commits" },
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>g", group = "Git" },
 
-wk.register({
-	g = {
-		name = "[ Git ]",
-		h = {
+	{ "<leader>g/", "<cmd>:!git rev-parse --show-toplevel<CR>", desc = "No highlight", icon = "" },
+	{ "<leader>g#", "<cmd>:Git blame<CR>", desc = "Blame list" },
+	{ "<leader>g?", "<cmd>:Git<CR>", desc = "Status" },
+	{
+		"<leader>g-",
+		function()
+			package.loaded.gitsigns.toggle_deleted()
+		end,
+		desc = "Toggle deleted",
+	},
+
+	{ "<leader>gS", "<cmd>:Git add .", desc = "Stage all" },
+	{
+		"<leader>gs",
+		function()
+			package.loaded.gitsigns.stage_buffer()
+		end,
+		desc = "Stage buffer",
+	},
+	{
+		"<leader>gb",
+		function()
+			package.loaded.gitsigns.blame_line({ full = true })
+		end,
+		desc = "Blame",
+	},
+	{
+		"<leader>gB",
+		function()
+			package.loaded.gitsigns.toggle_current_line_blame()
+		end,
+		desc = "Blame line",
+	},
+	{ "<leader>gx", "<cmd>:GBrowse<CR>", desc = "Github" },
+	{ "<leader>gc", "<cmd>:Git commit<CR>", desc = "Commit" },
+	{
+		"<leader>dd",
+		function()
+			package.loaded.gitsigns.diffthis()
+		end,
+		desc = "Diff buffer",
+	},
+	{
+		"<leader>gD",
+		function()
+			package.loaded.gitsigns.diffthis("~")
+		end,
+		desc = "Diff to last commit",
+	},
+	{ "<leader>gh", name = "Hunk" },
+	{
+		"<leader>ghh",
+		function()
+			package.loaded.gitsigns.stage_hunk()
+		end,
+		desc = "Hunk stage",
+	},
+	{
+		"<leader>ghu",
+		function()
+			package.loaded.gitsigns.undo_stage_hunk()
+		end,
+		desc = "Hunk undo stage",
+	},
+	{
+		"<leader>ghr",
+		function()
+			package.loaded.gitsigns.reset_hunk()
+		end,
+		desc = "Hunk reset",
+	},
+	{
+		"<leader>gR",
+		function()
+			package.loaded.gitsigns.reset_buffer()
+		end,
+		desc = "Hunk undo stage",
+	},
+	{
+		"<leader>ghp",
+		function()
+			package.loaded.gitsigns.preview_hunk()
+		end,
+		desc = "Hunk preview",
+	},
+	{
+		"<leader>ghj",
+		function()
+			package.loaded.gitsigns.next_hunk()
+		end,
+		desc = "Hunk next",
+	},
+	{
+		"<leader>ghk",
+		function()
+			package.loaded.gitsigns.prev_hunk()
+		end,
+		desc = "Hunk previous",
+	},
+	{ "<leader>gl", "<cmd>:Git log<CR>", desc = "Log" },
+	{ "<leader>gp", "<cmd>:Git push<CR>", desc = "Push" },
+	{ "<leader>gP", "<cmd>:Git pull<CR>", desc = "pull" },
+	{ "<leader>gr", "<cmd>:GRemove<CR>", desc = "Remove" },
+	-- v = { "<cmd>:GV<CR>", "View commits" },
+	-- V = { "<cmd>:GV!<CR>", "View buffer commits" },
+	{
+
+		mode = { "v" },
+		{
+			"<leader>gh",
 			function()
 				package.loaded.gitsigns.stage_hunk()
 			end,
-			"Hunk stage",
+			desc = "Hunk stage",
 		},
-		r = {
+		{
+			"<leader>gr",
 			function()
 				package.loaded.gitsigns.reset_hunk()
 			end,
-			"Hunk reset",
+			desc = "Hunk reset",
 		},
 	},
-}, { prefix = "<leader>", mode = "v" })
+})
+
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Find
-wk.register({
-	f = {
-		name = "[ Find ]",
-		a = {
-			function()
-				require("telescope.builtin").find_files()
-			end,
-			"Find [all]",
-		},
-		b = {
-			function()
-				require("telescope.builtin").buffers()
-			end,
-			"Buffers",
-		},
-		["*"] = {
-			function()
-				require("telescope").extensions.neoclip.default()
-			end,
-			"Clipboard",
-		},
-		["#"] = {
-			function()
-				require("telescope").extensions.file_browser.file_browser()
-			end,
-			"File browser",
-		},
-		["-"] = {
-			function()
-				require("telescope.builtin").find_files({ cwd = "~/.dotfiles" })
-			end,
-			"Dotfiles",
-		},
-		["_"] = {
-			function()
-				require("telescope.builtin").find_files({ cwd = "~/.scripts" })
-			end,
-			"Dotfiles",
-		},
-		["?"] = {
-			function()
-				require("telescope.builtin").find_files({ cwd = "~/Documents/Dokumentation/Knowledge/" })
-			end,
-			"Obsidian",
-		},
-		["="] = {
-			function()
-				require("telescope.builtin").spell_suggest(require("telescope.themes").get_cursor({}))
-			end,
-			"Spell suggest",
-		},
-		d = {
-			function()
-				require("telescope.builtin").diagnostics()
-			end,
-			"Diagnostics",
-		},
-		[","] = {
-			function()
-				require("telescope").commands()
-			end,
-			"Commands",
-		},
-		p = {
-			function()
-				require("telescope").extensions.repo.list({})
-			end,
-			"Projects",
-		},
-		f = {
-			function()
-				if vim.fn.system("git rev-parse --is-inside-work-tree") == true then
-					require("telescope.builtin").git_files()
-				else
-					require("telescope.builtin").find_files()
-				end
-			end,
-			"Find [git]",
-		},
-		c = {
-			function()
-				require("telescope.builtin").git_bcommits()
-			end,
-			"Commits [buffer]",
-		},
-		G = {
-			function()
-				require("telescope.builtin").git_commits()
-			end,
-			"Commits",
-		},
-		g = {
-			function()
-				require("telescope.builtin").live_grep()
-			end,
-			"Grep",
-		},
-		w = {
-			function()
-				local word = vim.fn.expand("<cword>")
-				require("telescope.builtin").find_files({ default_text = word })
-			end,
-			"Grep word",
-		},
-		W = {
-			function()
-				-- local word = vim.fn.expand("<cWORD>")
-				local word = vim.fn.expand("<cword>")
-				require("telescope.builtin").grep_string({ default_text = word })
-			end,
-			"Grep WORD",
-		},
-		["."] = {
-			function()
-				require("telescope.builtin").live_grep()
-			end,
-			"Grep",
-		},
-		h = {
-			function()
-				require("telescope.builtin").help_tags()
-			end,
-			"Help",
-		},
-		l = {
-			function()
-				require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-					winblend = 10,
-					previewer = false,
-				}))
-			end,
-			"Lines",
-		},
-		k = {
-			function()
-				require("telescope.builtin").keymaps()
-			end,
-			"Mappings",
-		},
-		m = {
-			function()
-				require("telescope.builtin").marks()
-			end,
-			"Marks",
-		},
+wk.add({
+	{ "<leader>f", group = "Find" },
 
-		r = {
-			function()
-				require("telescope.builtin").oldfiles()
-			end,
-			"Recent files",
-		},
-		s = {
-			function()
-				require("telescope.builtin").git_status()
-			end,
-			"Status [git]",
-		},
-		q = {
-			function()
-				require("telescope.builtin").quickfix()
-			end,
-			"Quickfix",
-		},
+	{
+		"<leader>fa",
+		function()
+			require("telescope.builtin").find_files()
+		end,
+		desc = "Find [all]",
 	},
-}, { prefix = "<leader>" })
+	{
+		"<leader>fb",
+		function()
+			require("telescope.builtin").buffers()
+		end,
+		desc = "Buffers",
+	},
+
+	{
+		"<leader>f*",
+		function()
+			require("telescope").extensions.neoclip.default()
+		end,
+		desc = "Clipboard",
+	},
+	{
+		"<leader>f#",
+		function()
+			require("telescope").extensions.file_browser.file_browser()
+		end,
+		desc = "File browser",
+	},
+	{
+		"<leader>f-",
+		function()
+			require("telescope.builtin").find_files({ cwd = "~/.dotfiles" })
+		end,
+		desc = "Dotfiles",
+	},
+	{
+		"<leader>f_",
+		function()
+			require("telescope.builtin").find_files({ cwd = "~/.scripts" })
+		end,
+		desc = "Scripts",
+	},
+	{
+		"<leader>f?",
+		function()
+			require("telescope.builtin").find_files({ cwd = "~/Documents/Dokumentation/Knowledge/" })
+		end,
+		desc = "Obsidian",
+	},
+	{
+		"<leader>f=",
+		function()
+			require("telescope.builtin").spell_suggest(require("telescope.themes").get_cursor({}))
+		end,
+		desc = "Spell suggest",
+	},
+	{
+		"<leader>fd",
+		function()
+			require("telescope.builtin").diagnostics()
+		end,
+		desc = "Diagnostics",
+	},
+	{
+		"<leader>f,",
+		function()
+			require("telescope").commands()
+		end,
+		desc = "Commands",
+	},
+	{
+		"<leader>fp",
+		function()
+			require("telescope").extensions.repo.list({})
+		end,
+		desc = "Projects",
+	},
+	{
+		"<leader>ff",
+		function()
+			if vim.fn.system("git rev-parse --is-inside-work-tree") == true then
+				require("telescope.builtin").git_files()
+			else
+				require("telescope.builtin").find_files()
+			end
+		end,
+		desc = "Find [git]",
+	},
+	{
+		"<leader>fc",
+		function()
+			require("telescope.builtin").git_bcommits()
+		end,
+		desc = "Commits [buffer]",
+	},
+	{
+		"<leader>fG",
+		function()
+			require("telescope.builtin").git_commits()
+		end,
+		desc = "Commits",
+	},
+	{
+		"<leader>fg",
+		function()
+			require("telescope.builtin").live_grep()
+		end,
+		desc = "Grep",
+	},
+	{
+		"<leader>fw",
+		function()
+			local word = vim.fn.expand("<cword>")
+			require("telescope.builtin").find_files({ default_text = word })
+		end,
+		desc = "Grep word",
+	},
+	{
+		"<leader>fW",
+		function()
+			-- local word = vim.fn.expand("<cWORD>")
+			local word = vim.fn.expand("<cword>")
+			require("telescope.builtin").grep_string({ default_text = word })
+		end,
+		desc = "Grep WORD",
+	},
+	{
+		"<leader>f.",
+		function()
+			require("telescope.builtin").live_grep()
+		end,
+		desc = "Grep",
+	},
+	{
+		"<leader>fh",
+		function()
+			require("telescope.builtin").help_tags()
+		end,
+		desc = "Help",
+	},
+	{
+		"<leader>fl",
+		function()
+			require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+				winblend = 10,
+				previewer = false,
+			}))
+		end,
+		desc = "Lines",
+	},
+	{
+		"<leader>fk",
+		function()
+			require("telescope.builtin").keymaps()
+		end,
+		desc = "Mappings",
+	},
+	{
+		"<leader>fm",
+		function()
+			require("telescope.builtin").marks()
+		end,
+		desc = "Marks",
+	},
+
+	{
+		"<leader>fr",
+		function()
+			require("telescope.builtin").oldfiles()
+		end,
+		desc = "Recent files",
+	},
+	{
+		"<leader>fs",
+		function()
+			require("telescope.builtin").git_status()
+		end,
+		desc = "Status [git]",
+	},
+	{
+		"<leader>fq",
+		function()
+			require("telescope.builtin").quickfix()
+		end,
+		desc = "Quickfix",
+	},
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Obsidian
-wk.register({
-	o = {
-		name = "[ Obsidian ]",
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>o", group = "Obsidian", icon = "" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Quick replace
 -- Normal mode
-wk.register({
-	r = {
-		name = "[ Replace ]",
-		b = { ":%s/<C-r><C-w>/", "Replace current word" },
-		l = { ":s/<C-r><C-w>/", "Replace current word in line" },
+wk.add({
+	{ "<leader>r", group = "Replace", icon = "" },
+	{
+		mode = { "n" },
+		{ "<leader>rb", ":%s/<C-r><C-w>/", desc = "Replace current word" },
+		{ "<leader>rl", ":s/<C-r><C-w>/", desc = "Replace current word in line" },
 	},
-}, { prefix = "<leader>", silent = false })
--- Visual mode
-wk.register({
-	r = {
-		name = "[ Replace ]",
-		b = { '""y:%s/<C-r>"/', "Replace current selection" },
+	{
+		mode = { "v" },
+		{ "<leader>rb", '""y:%s/<C-r>"/', desc = "Replace current selection" },
 	},
-}, { prefix = "<leader>", silent = false, mode = "v" })
-
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
@@ -866,96 +901,96 @@ local function get_visual()
 	return vim.api.nvim_exec([[echo getreg('v')]], true):gsub("[\n\r]", "^J")
 end
 
--- Normal mode
-wk.register({
-	s = {
-		name = "[ Search ]",
-		d = {
+wk.add({
+	{ "<leader>s", group = "Search" },
+	{
+		-- Normal mode
+		mode = { "n" },
+
+		{
+			"<leader>sd",
 			function()
 				browser("https://devdocs.io/#q=", vim.bo.filetype .. "%20" .. vim.fn.expand("<cword>"))
 			end,
-			"DevDocs",
+			desc = "DevDocs",
 		},
-		g = {
+		{
+			"<leader>sg",
 			function()
 				browser("https://google.de/search?q=", vim.fn.expand("<cword>"))
 			end,
-			"Google with selected word",
+			desc = "Google with selected word",
 		},
-		i = {
+		{
+			"<leader>si",
 			function()
 				require("browse").input_search()
 			end,
-			"Google with input",
+			desc = "Google with input",
 		},
 	},
-}, { prefix = "<leader>" })
-
--- Visual mode
-wk.register({
-	s = {
-		name = "[ Search ]",
-		g = {
+	{
+		-- Visual mode
+		mode = { "v" },
+		{
+			"<leader>sg",
 			function()
 				browser("https://google.de/search?q=", get_visual())
 			end,
-			"Google with selected text",
+			desc = "Google with selected text",
 		},
-		s = {
+		{
+			"<leader>ss",
 			function()
 				browser(get_visual(), "")
 			end,
-			"Open browser with selected text",
+			desc = "Open browser with selected text",
 		},
 	},
-}, { prefix = "<leader>", mode = "v" })
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Buffer
-wk.register({
-	b = {
-		name = "[ Buffer ]",
-		b = {
-			function()
-				require("telescope.builtin").buffers()
-			end,
-			"List buffers",
-		},
-		n = "Order by number",
-		p = "Order by directory tree",
-		l = "Order by language",
-		w = "Order by window number",
-		s = { "<cmd>w<CR>", "Save buffer" },
-		d = { "<Cmd>close<CR>", "Close file" },
-		c = { "<Cmd>bd<CR>", "Close buffer view" },
-		x = { "<cmd>bd!<CR>", "DELETE buffer" },
+wk.add({
+	{ "<leader>b", group = "Buffer" },
+	{
+		"<leader>bb",
+		function()
+			require("telescope.builtin").buffers()
+		end,
+		desc = "List buffers",
 	},
-}, { prefix = "<leader>" })
+	{ "<leader>bn", desc = "Order by number" },
+	{ "<leader>bp", desc = "Order by directory tree" },
+	{ "<leader>bl", desc = "Order by language" },
+	{ "<leader>bw", desc = "Order by window number" },
+	{ "<leader>bs", "<cmd>w<CR>", desc = "Save buffer" },
+	{ "<leader>bd", "<Cmd>close<CR>", desc = "Close file" },
+	{ "<leader>bc", "<Cmd>bd<CR>", desc = "Close buffer view" },
+	{ "<leader>bx", "<cmd>bd!<CR>", desc = "DELETE buffer" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
--- Buffer
-wk.register({
-	l = {
-		name = "[ Location ]",
-		["-"] = { "<cmd>cd ~/.dotfiles<CR>", ".dotfiles" },
-		["_"] = { "<cmd>cd ~/.scripts<CR>", ".scripts" },
-		["p"] = { "<cmd>cd ~/Documents/Projects<CR>", "Projects" },
-		["d"] = { "<cmd>cd ~/Documents<CR>", "Documents" },
-	},
-}, { prefix = "<leader>" })
+-- Location
+wk.add({
+	{ "<leader>l", group = "Location", icon = "" },
+	{ "<leader>l-", desc = "Order by number" },
+	{ "<leader>l-", "<cmd>cd ~/.dotfiles<CR>", desc = ".dotfiles" },
+	{ "<leader>l_", "<cmd>cd ~/.scripts<CR>", desc = ".scripts" },
+	{ "<leader>lp", "<cmd>cd ~/Documents/Projects<CR>", desc = "Projects" },
+	{ "<leader>ld", "<cmd>cd ~/Documents<CR>", desc = "Documents" },
+})
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
 -- Time Date
-wk.register({
-	["#"] = {
-		name = "[ Time/Date ]",
-		t = { "<cmd>Time<CR>", "Time" },
-		d = { "<cmd>Date<CR>", "Date" },
-		u = { "<cmd>USDate<CR>", "US Date" },
-		c = { "<cmd>TimeDiff<CR>", "Time Diff" },
-	},
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>#", group = "Time and Date", icon = "" },
+	{ "<leader>#t", "<cmd>Time<CR>", desc = "Time" },
+	{ "<leader>#d", "<cmd>Date<CR>", desc = "Date" },
+	{ "<leader>#u", "<cmd>USDate<CR>", desc = "US Date" },
+	{ "<leader>#c", "<cmd>TimeDiff<CR>", desc = "Time Diff" },
+})
 --------------------------------------------------------------------
