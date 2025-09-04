@@ -145,3 +145,21 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
 		vim.api.nvim_set_hl(0, "Normal", { bg = "#1d2021" })
 	end,
 })
+
+vim.api.nvim_create_autocmd("WinEnter", {
+
+	callback = function()
+		vim.cmd([[
+setlocal cursorline cursorcolumn
+    ]])
+	end,
+})
+
+vim.api.nvim_create_autocmd("WinLeave", {
+
+	callback = function()
+		vim.cmd([[
+	setlocal nocursorline nocursorcolumn
+    ]])
+	end,
+})

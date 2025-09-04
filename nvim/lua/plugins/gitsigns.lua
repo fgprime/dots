@@ -2,7 +2,7 @@ return {
 	---- ✓ Super fast git decorations implemented purely in lua/teal.
 	{
 		"lewis6991/gitsigns.nvim",
-		commit = "d96ef3b",
+		commit = "1b0350ab707713b2bc6c236151f1a324175347b1",
 		config = function()
 			require("gitsigns").setup({
 				on_attach = function(bufnr)

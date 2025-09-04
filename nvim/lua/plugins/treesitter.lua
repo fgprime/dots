@@ -3,7 +3,7 @@ return {
 	-- ✓ Use treesitter to autoclose and autorename html tag
 	{
 		"windwp/nvim-ts-autotag",
-		commit = "40615e9", -- 🔐
+		commit = "a1d526af391f6aebb25a8795cbc05351ed3620b5", -- 🔐
 	},
 	-- Load before treesitter - led to bug
 
@@ -11,7 +11,7 @@ return {
 	{
 		"ckolkey/ts-node-action",
 		dependencies = { "nvim-treesitter" },
-		commit = "e37eb45", -- 🔐
+		commit = "bfaa787cc85d753af3c19245b4142ed727a534b5", -- 🔐
 		config = function()
 			require("ts-node-action").setup({})
 			-- require("hurl").setup()
@@ -26,7 +26,7 @@ return {
 
 	{
 		"nvim-treesitter/nvim-treesitter",
-		commit = "f9773e4", -- 🔐
+		commit = "42fc28ba918343ebfd5565147a42a26580579482", -- 🔐
 		build = ":TSUpdate",
 		config = function()
 			require("nvim-treesitter.configs").setup({
@@ -211,23 +211,23 @@ return {
 		dependencies = {
 			{
 				"pfeiferj/nvim-hurl",
-				commit = "3a34efe", -- 🔐
+				commit = "5b7c61364e1872ab1cbaf0ff1da941f0ec94a04a", -- 🔐
 				branch = "main",
 			},
 			{
 				-- ✓ Syntax aware text-objects, select, move, swap, and peek support.
 				"nvim-treesitter/nvim-treesitter-textobjects",
-				commit = "2d6d3c7", -- 🔐
+				commit = "0f051e9813a36481f48ca1f833897210dbcfffde", -- 🔐
 			},
 			{
 				-- ✓ Location and syntax aware text objects which *do what you mean*
 				"RRethy/nvim-treesitter-textsubjects",
-				commit = "b913508", -- 🔐
+				commit = "abcbb0e537c9c24800b03b9ca33bee5806604629", -- 🔐
 			},
 			{
 				-- ✓ A super powerful autopair plugin for Neovim that supports multiple characters.
 				"windwp/nvim-autopairs",
-				commit = "dbfc1c3", -- 🔐
+				commit = "4d74e75913832866aa7de35e4202463ddf6efd1b", -- 🔐
 				dependencies = { "hrsh7th/nvim-cmp" },
 				config = function()
 					local npairs = require("nvim-autopairs")
@@ -244,7 +244,7 @@ return {
 				dependencies = {
 					{
 						"HiPhish/rainbow-delimiters.nvim",
-						commit = "4d2d3f9", -- 🔐
+						commit = "97bf4b8ef9298644a29fcd9dd41a0210cf08cac7", -- 🔐
 						config = function()
 							vim.api.nvim_set_hl(0, "TSRainbowRed", { fg = "#fb4934" })
 							vim.api.nvim_set_hl(0, "TSRainbowYellow", { fg = "#fabd2f" })
@@ -298,7 +298,7 @@ return {
 				-- Necessary for comments in JSX
 				-- ✓ A Neovim plugin for setting the commentstring option based on the cursor location in the file. The location is checked via treesitter queries.
 				"JoosepAlviste/nvim-ts-context-commentstring",
-				commit = "1277b4a", -- 🔐
+				commit = "1b212c2eee76d787bbea6aa5e92a2b534e7b4f8f", -- 🔐
 				config = function()
 					-- Speed up nvim-ts-context-commentstring
 					vim.g.skip_ts_context_commentstring_module = true

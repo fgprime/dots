@@ -49,21 +49,22 @@ return {
 		},
 		lazy = true,
 		cmd = { "Mason", "MasonUpdate", "MasonInstall", "MasonUninstallAll", "MasonLog" },
-		commit = "0950b15", -- 🔐
+		commit = "8024d64e1330b86044fed4c8494ef3dcd483a67c", -- 🔐
 		config = function() end,
 	},
 
 	-- ✓ mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
 	{
 		"williamboman/mason-lspconfig.nvim",
-		commit = "37a336b", -- 🔐
+		commit = "f54e3c11fc9ebfcfc27e696182b0295b071d0811", -- 🔐
 		lazy = true,
 		config = function()
 			require("mason").setup({
+
 				providers = {
 					-- Deactivated to avoid constant requests
-					-- "mason.providers.registry-api",
-					-- "mason.providers.client",
+					"mason.providers.registry-api",
+					"mason.providers.client",
 				},
 				ui = {
 					check_outdated_packages_on_open = false,
@@ -71,9 +72,7 @@ return {
 			})
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-					"tsserver",
 					"eslint",
-					-- "emmet_ls",
 					"html",
 					"cssls",
 					"cssmodules_ls",
@@ -193,7 +192,7 @@ return {
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 		},
-		commit = "6168237", -- 🔐
+		commit = "ce3e92cfc60480acd9b7086caa6cbf3f10fb2d67", -- 🔐
 		config = function()
 			-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 			local opts = { noremap = true, silent = true }
@@ -278,7 +277,7 @@ return {
 	-- ✓ Standalone UI for nvim-lsp progress. Eye candy for the impatient.
 	{
 		"j-hui/fidget.nvim",
-		commit = "ef99df0", -- 🔐
+		commit = "b61e8af9b8b68ee0ec7da5fb7a8c203aae854f2e", -- 🔐
 		config = function()
 			require("fidget").setup()
 		end,
@@ -287,7 +286,7 @@ return {
 	-- ✓ Show function signature when you type
 	{
 		"ray-x/lsp_signature.nvim",
-		commit = "2ec2ba2", -- 🔐
+		commit = "2923666d092300e6d03c8d895991d0bef43f1613", -- 🔐
 		config = function()
 			require("lsp_signature").setup({
 				bind = true,
@@ -307,7 +306,7 @@ return {
 	{
 
 		"nvimtools/none-ls.nvim",
-		commit = "c2dd472", -- 🔐
+		commit = "db2a48b79cfcdab8baa5d3f37f21c78b6705c62e", -- 🔐
 		config = function()
 			local null_ls = require("null-ls")
 			local sources = {
@@ -340,6 +339,8 @@ return {
 			-- print(vim.inspect(sources))
 
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+			vim.g.autoFormat = true
+
 			require("null-ls").setup({
 				sources = sources,
 				on_attach = function(client, bufnr)
@@ -349,14 +350,16 @@ return {
 							group = augroup,
 							buffer = bufnr,
 							callback = function()
-								vim.lsp.buf.format({
-									bufnr = bufnr,
-									-- On Neovim v0.8+, when calling vim.lsp.buf.format as done in the examples above, you may want to filter the available formatters so that only null-ls receives the formatting request
-									filter = function(client)
-										return client.name == "null-ls"
-									end,
-									timeout_ms = 2000,
-								})
+								if vim.g.autoFormat then
+									vim.lsp.buf.format({
+										bufnr = bufnr,
+										-- On Neovim v0.8+, when calling vim.lsp.buf.format as done in the examples above, you may want to filter the available formatters so that only null-ls receives the formatting request
+										filter = function(client)
+											return client.name == "null-ls"
+										end,
+										timeout_ms = 2000,
+									})
+								end
 							end,
 						})
 					end

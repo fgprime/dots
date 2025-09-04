@@ -1,7 +1,7 @@
 return {
 	{
 		"stevearc/oil.nvim",
-		commit = "2cb39e8", -- 🔐
+		commit = "3b7c74798e699633d602823aefd9a4e4e36c02a8", -- 🔐
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("oil").setup({
@@ -10,6 +10,7 @@ return {
 				keymaps = {
 					["<C-h>"] = false,
 					["<M-h>"] = "actions.select_split",
+					["-"] = false,
 				},
 				view_options = {
 					show_hidden = true,

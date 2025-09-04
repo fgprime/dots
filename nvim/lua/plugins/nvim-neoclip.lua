@@ -2,7 +2,7 @@ return {
 	---- ✓ neoclip is a clipboard manager for neovim inspired by for example clipmenu. It records everything that gets yanked in your vim session (up to a limit which is by default 1000 entries but can be configured).
 	{
 		"AckslD/nvim-neoclip.lua",
-		commit = "5b9286a", -- 🔐
+		commit = "831a97c7697736411a05ff8b91e8798ea4c2d6fb", -- 🔐
 		dependencies = {
 			{ "tami5/sqlite.lua", module = "sqlite" },
 			{ "nvim-telescope/telescope.nvim" },

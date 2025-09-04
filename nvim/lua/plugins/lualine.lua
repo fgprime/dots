@@ -48,7 +48,7 @@ return {
 	---- ✓ A blazing fast and easy to configure Neovim statusline written in Lua.
 	{
 		"nvim-lualine/lualine.nvim",
-		commit = "7533b0e", -- 🔐
+		commit = "556e99f0bd1bfbdd5a550ffe3a9c81244458f289", -- 🔐
 		config = function()
 			require("lualine").setup({
 				options = {

@@ -1,7 +1,7 @@
 return {
 	{
 		"romgrk/barbar.nvim",
-		commit = "4ba9ac5", -- 🔐
+		commit = "3a74402bdf04745a762de83d5c5e88e3e9b0e2e0", -- 🔐
 		dependencies = {
 			"lewis6991/gitsigns.nvim", -- OPTIONAL: for git status
 			"nvim-tree/nvim-web-devicons", -- OPTIONAL: for file icons

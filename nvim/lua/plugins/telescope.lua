@@ -95,6 +95,10 @@ return {
 						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
 						-- the default case_mode is "smart_case"
 					},
+
+					advanced_git_search = {
+						-- See Config
+					},
 				},
 				-- vimgrep_arguments = GREP_COMMAND,
 				follow = true,
@@ -105,6 +109,7 @@ return {
 			require("telescope").load_extension("repo")
 			require("telescope").load_extension("neoclip")
 			require("telescope").load_extension("file_browser")
+			require("telescope").load_extension("advanced_git_search")
 			-- require("telescope").load_extension("harpoon")
 		end,
 	},
@@ -128,6 +133,11 @@ return {
 		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
 	},
 
+	{
+		"aaronhallaert/advanced-git-search.nvim",
+		commit = "066865c",
+		cmd = { "AdvancedGitSearch" },
+	},
 	-- FIXME: harpoon is crashing after update
 	-- {
 	-- 	"ThePrimeagen/harpoon",

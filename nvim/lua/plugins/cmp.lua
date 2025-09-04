@@ -18,32 +18,25 @@ return {
 	{
 		"hrsh7th/nvim-cmp",
 
-		commit = "abacd4c", -- 🔐
 		dependencies = {
 
 			{
 				"hrsh7th/cmp-nvim-lua",
-				commit = "f12408b", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-nvim-lsp",
-				commit = "fa13fd6", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-buffer",
-				commit = "3022dbc", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-path",
-				commit = "91ff86c", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-calc",
-				commit = "5947b41", -- 🔐
 			},
 			{
 				"hrsh7th/cmp-cmdline",
-				commit = "d250c63", -- 🔐
 			},
 			{
 				"ray-x/cmp-treesitter",
@@ -51,11 +44,11 @@ return {
 			}, -- nvim-cmp source for treesitter nodes. Using all treesitter highlight nodes as completion candicates. LRU cache is used to improve performance.
 			{
 				"lukas-reineke/cmp-rg",
-				commit = "dde00ad", -- 🔐
+				commit = "70a43543f61b6083ba9c3b7deb9ccee671410ac6", -- 🔐
 			},
 			{
 				"saadparwaiz1/cmp_luasnip",
-				commit = "05a9ab2", -- 🔐
+				commit = "98d9cb5c2c38532bd9bdb481067b20fea8f32e90", -- 🔐
 			},
 		},
 		config = function()
@@ -144,11 +137,30 @@ return {
 						behavior = cmp.ConfirmBehavior.Replace,
 						select = true,
 					}),
-					-- TODO: use CR or C-y?
 					["<C-y>"] = cmp.mapping.confirm({
 						behavior = cmp.ConfirmBehavior.Replace,
 						select = true,
 					}),
+					["<C-j>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_next_item()
+						elseif luasnip.expand_or_jumpable() then
+							luasnip.expand_or_jump()
+						elseif has_words_before() then
+							cmp.complete()
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+					["<C-k>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						elseif luasnip.jumpable(-1) then
+							luasnip.jump(-1)
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
 					["<C-n>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
@@ -266,7 +278,7 @@ return {
 	-- ✓ This tiny plugin adds vscode-like pictograms to neovim built-in lsp
 	{
 		"onsails/lspkind-nvim",
-		commit = "1735dd5", -- 🔐
+		commit = "d79a1c3299ad0ef94e255d045bed9fa26025dab6", -- 🔐
 	},
 
 	-- ✓ Luasnip is a snippet-engine written entirely in lua.
@@ -280,6 +292,23 @@ return {
 		},
 		config = function()
 			require("luasnip.loaders.from_vscode").lazy_load()
+
+			local ls = require("luasnip")
+			local date = function()
+				return { os.date("%d.%m.%Y") }
+			end
+
+			ls.add_snippets(nil, {
+				all = {
+					ls.snippet({
+						trig = "date",
+						namr = "Date",
+						dscr = "Put the date (DD.MM.YYYY) format",
+					}, {
+						ls.function_node(date, {}),
+					}),
+				},
+			})
 		end,
 	},
 }

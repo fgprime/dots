@@ -1,6 +1,6 @@
 return {
 	"Wansmer/sibling-swap.nvim",
-	commit = "a9a0fbb", -- 🔐
+	commit = "75e696c340429769aa34d0bbae1511c8d9660c0b", -- 🔐
 	dependencies = { "nvim-treesitter" },
 	keys = {
 		{

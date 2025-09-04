@@ -9,6 +9,14 @@ local opts = { noremap = true, silent = true, nowait = true }
 -- See `:help vim.keymap.set()`
 map({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
+vim.cmd([[
+  cmap <C-k> <C-p>
+    ]])
+
+vim.cmd([[
+  cmap <C-j> <C-n>
+    ]])
+
 -- Create box and figlet
 map("v", "<F2>", "<cmd>.!boxes -d stone<cr>", opts)
 map("v", "<F3>", "<cmd>.!toilet<cr>", opts)
@@ -37,10 +45,6 @@ map("n", "U", "<C-r>", opts)
 --   nnoremap Q @q
 map("n", "Q", "@q", opts)
 
--- Compatibility with German keyboard (e.g. vim-unimpaired keybindings [,])
-map({ "n", "o", "x" }, "ü", "[", { remap = true, silent = true, nowait = true })
-map({ "n", "o", "x" }, "+", "]", { remap = true, silent = true, nowait = true })
-
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -50,7 +54,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = highlight_group,
 	pattern = "*",
 })
-
+-- ----------------------------------------------------------------------------
+-- Add Accent
+-- ----------------------------------------------------------------------------
+map("i", "<M-u>", "<c-k>:", opts)
 -- ----------------------------------------------------------------------------
 -- More molecular undo of text
 -- ----------------------------------------------------------------------------
@@ -234,14 +241,6 @@ wk.add({
 	-- { "<leader>5", "5<C-W>w", desc = "Move to Window 5" },
 	-- { "<leader>6", "6<C-W>w", desc = "Move to Window 6" },
 	--
-	{
-		"<leader>-",
-		function()
-			require("oil").toggle_float()
-		end,
-		desc = "Oil",
-		icon = "",
-	},
 	{ "<leader>*", "ggVG<c-$>", desc = "Select all", icon = "󰓎" },
 	{ "<leader>p", '"xp', desc = "Paste deleted after", icon = "" },
 	{ "<leader>P", '"xP', desc = "Paste deleted before", icon = "" },
@@ -259,16 +258,6 @@ wk.add({
 		end,
 		desc = "Find [git]",
 	},
-	-- {
-	-- 	"<leader>,",
-	-- 	function()
-	-- 		require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-	-- 			winblend = 10,
-	-- 			previewer = false,
-	-- 		}))
-	-- 	end,
-	-- 	desc = "Lines",
-	-- },
 	{
 		"<leader>.",
 		function()
@@ -277,7 +266,6 @@ wk.add({
 		desc = "Save file",
 		icon = "",
 	},
-	{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Explorer", icon = "" },
 })
 --------------------------------------------------------------------
 
@@ -319,7 +307,7 @@ wk.add({
 	{
 		"<leader>wr",
 		function()
-			require("persistence").load()
+			require("persistence").select()
 		end,
 		desc = "Window restore",
 	},
@@ -329,7 +317,15 @@ wk.add({
 	{ "<leader>wk", "<C-W>k", desc = "Window down" },
 	{ "<leader>wh", "<C-W>h", desc = "Window left" },
 	{ "<leader>wl", "<C-W>l", desc = "Window right" },
-	{ "<leader>wz", "<cmd>MaximizerToggle<CR>", desc = "Window maximize or minimize" },
+	-- { "<leader>wz", "<cmd>MaximizerToggle<CR>", desc = "Window maximize or minimize" },
+	{
+		"<leader>wm",
+		function()
+			Snacks.zen.zoom()
+		end,
+		desc = "Window maximize or minimize",
+	},
+
 	{ "<leader>w-", "<C-W>10<", desc = "Decrease width" },
 	{ "<leader>w+", "<C-W>10>", desc = "Increase width" },
 	{ "<leader>w.", ":resize -10<CR>", desc = "Decrease height" },
@@ -356,10 +352,18 @@ wk.add({
 --------------------------------------------------------------------
 -- General
 wk.add({
-	{ "<leader>_", group = "General", icon = "󰋜" },
-	{ "<leader>_c", "<cmd>ColorizerToggle<CR>", desc = "Colorizer" },
+	{ "<leader>/", group = "General", icon = "󰋜" },
 	{
-		"<leader>_n",
+		"<leader>/-",
+		function()
+			require("oil").toggle_float()
+		end,
+		desc = "Oil",
+		icon = "",
+	},
+	{ "<leader>/c", "<cmd>ColorizerToggle<CR>", desc = "Colorizer" },
+	{
+		"<leader>/n",
 		function()
 			vim.cmd([[ source $MYVIMRC ]])
 			vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
@@ -367,34 +371,58 @@ wk.add({
 		desc = "Configuration reload",
 	},
 
-	{ "<leader>_s", "<cmd>SymbolsOutline<CR>", desc = "Symbols" },
-	{ "<leader>_m", "<cmd>MinimapToggle<CR>", desc = "Minimap" },
-	{ "<leader>_u", "<cmd>UndotreeToggle<CR>", desc = "Undotree" },
-	{ "<leader>_p", "<cmd>TroubleToggle<CR>", desc = "Trouble" },
+	{ "<leader>/s", "<cmd>SymbolsOutline<CR>", desc = "Symbols" },
+	{ "<leader>/m", "<cmd>MinimapToggle<CR>", desc = "Minimap" },
+	{ "<leader>/u", "<cmd>UndotreeToggle<CR>", desc = "Undotree" },
+	{ "<leader>/p", "<cmd>TroubleToggle<CR>", desc = "Trouble" },
+	{ "<leader>/l", "<cmd>Lazy<CR>", desc = "Lazy" },
+	{ "<leader>/f", desc = "Format" },
+	{ "<leader>/s", desc = "Session" },
 	{
-		"<leader>_f",
+		"<leader>/ff",
 		function()
 			vim.lsp.buf.format()
 		end,
 		desc = "Format",
 	},
 	{
-		"<leader>_l",
+		"<leader>/fn",
+		function()
+			vim.g.autoFormat = false
+		end,
+		desc = "No auto format",
+	},
+
+	{
+		"<leader>/fa",
+		function()
+			vim.g.autoFormat = true
+		end,
+		desc = "Activate auto format",
+	},
+	{
+		"<leader>/sl",
 		function()
 			require("persistence").load()
 		end,
 		desc = "Session: Load for the current directory",
 	},
 	{
-		"<leader>_d",
+		"<leader>/sL",
 		function()
 			require("persistence").load({ last = true })
 		end,
 		desc = "Session: Load last one",
 	},
-	{ "<leader>_t", "<cmd>NvimTreeToggle<CR>", desc = "Tree" },
 	{
-		"<leader>_x",
+		"<leader>/t",
+		function()
+			Snacks.explorer()
+		end,
+		desc = "Tree",
+	},
+	{
+		"<leader>/x",
 		function()
 			require("persistence").stop()
 		end,
@@ -678,6 +706,12 @@ wk.add({
 			require("telescope.builtin").find_files()
 		end,
 		desc = "Find [all]",
+	},
+
+	{
+		"<leader>fA",
+		"<cmd>AdvancedGitSearch<CR>",
+		desc = "Advanced Git Search",
 	},
 	{
 		"<leader>fb",
@@ -973,6 +1007,31 @@ wk.add({
 --------------------------------------------------------------------
 
 --------------------------------------------------------------------
+-- KI
+wk.add({
+	{ "<leader>a", group = "AI" },
+	{ "<leader>ac", "<cmd>ChatGPT<CR>", desc = "ChatGPT", mode = { "n" } },
+	{ "<leader>ae", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
+	{ "<leader>ag", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction", mode = { "n", "v" } },
+	{ "<leader>at", "<cmd>ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
+	{ "<leader>ak", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
+	{ "<leader>ad", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
+	{ "<leader>aa", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add Tests", mode = { "n", "v" } },
+	{ "<leader>ao", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize Code", mode = { "n", "v" } },
+	{ "<leader>as", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
+	{ "<leader>af", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs", mode = { "n", "v" } },
+	{ "<leader>ax", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain Code", mode = { "n", "v" } },
+	{ "<leader>ar", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit", mode = { "n", "v" } },
+	{
+		"<leader>al",
+		"<cmd>ChatGPTRun code_readability_analysis<CR>",
+		desc = "Code Readability Analysis",
+		mode = { "n", "v" },
+	},
+})
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
 -- Location
 wk.add({
 	{ "<leader>l", group = "Location", icon = "" },
@@ -987,10 +1046,10 @@ wk.add({
 --------------------------------------------------------------------
 -- Time Date
 wk.add({
-	{ "<leader>#", group = "Time and Date", icon = "" },
-	{ "<leader>#t", "<cmd>Time<CR>", desc = "Time" },
-	{ "<leader>#d", "<cmd>Date<CR>", desc = "Date" },
-	{ "<leader>#u", "<cmd>USDate<CR>", desc = "US Date" },
-	{ "<leader>#c", "<cmd>TimeDiff<CR>", desc = "Time Diff" },
+	{ "<leader>+", group = "Time and Date", icon = "" },
+	{ "<leader>+t", "<cmd>Time<CR>", desc = "Time" },
+	{ "<leader>+d", "<cmd>Date<CR>", desc = "Date" },
+	{ "<leader>+u", "<cmd>USDate<CR>", desc = "US Date" },
+	{ "<leader>+c", "<cmd>TimeDiff<CR>", desc = "Time Diff" },
 })
 --------------------------------------------------------------------
